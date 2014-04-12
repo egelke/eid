@@ -59,8 +59,6 @@
     <Compile Include="SCard\CardAttrId.cs" />
     <Compile Include="SCard\CardContextSafeHandler.cs" />
     <Compile Include="SCard\CardDisposition.cs" />
-    <Compile Include="DeviceState.cs" />
-    <Compile Include="DeviceEventArgs.cs" />
     <Compile Include="SCard\CardPCI.cs" />
     <Compile Include="SCard\CardProtocols.cs" />
     <Compile Include="SCard\CardSafeHandler.cs" />

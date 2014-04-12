@@ -41,15 +41,12 @@ namespace Egelke.Eid.Client
             this.context = context;
             this.ReaderName = readerName;
 
-            lock (context)
-            {
-                CardProtocols protocol;
-                uint retVal = NativeMethods.SCardConnect(context, ReaderName, CardShareMode.SCARD_SHARE_EXCLUSIVE, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
-                if (retVal == 0x80100069L) throw new NoCardException("Not card was found in the reader");
-                if (retVal == 0x8010000BL) throw new ReaderException("The card is being accessed from a different context");
-                if (retVal == 0x80100009L) throw new ReaderException("The specified reader does not exist");
-                if (retVal != 0) throw new InvalidOperationException("Failed to open card reader: 0x" + retVal.ToString("X"));
-            }
+            CardProtocols protocol;
+            uint retVal = NativeMethods.SCardConnect(context, ReaderName, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
+            if (retVal == 0x80100069L) throw new NoCardException("Not card was found in the reader");
+            if (retVal == 0x8010000BL) throw new ReaderException("The card is being accessed from a different context");
+            if (retVal == 0x80100009L) throw new ReaderException("The specified reader does not exist");
+            if (retVal != 0) throw new InvalidOperationException("Failed to open card reader: 0x" + retVal.ToString("X"));
         }
 
         ~EidCard()
@@ -59,8 +56,9 @@ namespace Egelke.Eid.Client
 
         private byte[] ReadRaw(byte[] fileSelect)
         {
-            
-            uint retVal = NativeMethods.SCardBeginTransaction(handler);
+            uint retVal;
+
+            retVal = NativeMethods.SCardBeginTransaction(handler);
             if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
             if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
             if (retVal != 0) throw new InvalidOperationException("Failed to start transaction: 0x" + retVal.ToString("X"));

@@ -58,16 +58,13 @@
       <HintPath>..\packages\NUnitTestAdapter.0.95.0\lib\nunit.util.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NUnit.VisualStudio.TestAdapter">
-      <HintPath>..\packages\NUnitTestAdapter.0.95.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>

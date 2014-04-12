@@ -1,6 +1,7 @@
 ﻿using Egelke.Eid.Client;
 using NUnit.Framework;
 using System;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 
@@ -30,9 +31,11 @@ namespace Egelke.Eid.Client.Test
         [Test]
         public void ReadEidCertificates()
         {
-            using (Readers listen = new Readers(ReaderScope.User))
+            using (Readers readers = new Readers(ReaderScope.User))
             {
-                EidCard target = listen.WaitForEid(new TimeSpan(0, 5, 0));
+                readers.EidCardRequest += readers_EidCardRequest;
+                readers.EidCardRequestCancellation += readers_EidCardRequestCancellation;
+                EidCard target = readers.WaitForEid(new TimeSpan(0, 5, 0));
                 Assert.NotNull(target);
                 using (target)
                 {
@@ -48,6 +51,16 @@ namespace Egelke.Eid.Client.Test
                     Assert.AreEqual(root.Issuer, root.Subject);
                 }
             }
+        }
+
+        void readers_EidCardRequest(object sender, EventArgs e)
+        {
+            System.Console.WriteLine("Please insert eID Card");
+        }
+
+        void readers_EidCardRequestCancellation(object sender, EventArgs e)
+        {
+            System.Console.WriteLine("eID Card incerted");
         }
 
     }
