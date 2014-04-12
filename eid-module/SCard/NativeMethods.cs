@@ -34,7 +34,10 @@ namespace Egelke.Eid.Client
         internal static extern uint SCardReleaseContext(IntPtr hContext);
 
         [DllImport("winscard.dll", CharSet = CharSet.Auto)]
-        internal static extern uint SCardListReaders(CardContextSafeHandler hContext, IntPtr mszGroups, [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] Char[] mszReaders, [In, Out] ref int pcchReaders);
+        internal static extern uint SCardListReaders(CardContextSafeHandler hContext, [In, MarshalAs(UnmanagedType.LPArray)] Char[] mszGroups, [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] Char[] mszReaders, [In, Out] ref int pcchReaders);
+
+        [DllImport("winscard.dll", CharSet = CharSet.Auto)]
+        internal static extern uint SCardLocateCards(CardContextSafeHandler hContext, [In, MarshalAs(UnmanagedType.LPArray)] Char[] mszCards, [In, Out] SCARD_READERSTATE[] rgReaderStates, int cReaders);
 
         [DllImport("winscard.dll", CharSet = CharSet.Auto)]
         internal static extern uint SCardListCards(CardContextSafeHandler hContext, byte[] pbAtr, IntPtr rgguidInterfaces, int cguidInterfaceCount, [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] Char[] mszCards, [In, Out] ref int pcchCards);

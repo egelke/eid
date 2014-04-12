@@ -15,25 +15,25 @@ namespace Egelke.Eid.Client.Test
     [TestFixture]
     public class EidWrapperTest
     {
-
-        [Test, ExpectedException(typeof(ReaderException))]
-        public void ReadNotFound()
+        [Test, ExpectedException(typeof(TimeoutException))]
+        public void FailToReadEidCertificates()
         {
-            EidReader target = new EidReader("This reader that can't be found!");
+            using (Readers listen = new Readers(ReaderScope.User))
+            {
+                EidCard target = listen.WaitForEid(new TimeSpan(0, 0, 5));
+            }
         }
 
         /// <summary>
         ///A test for ReadCertificate
         ///</summary>
         [Test]
-        public void ReadCertificates()
+        public void ReadEidCertificates()
         {
-
-            using (EidReaders readers = new EidReaders(ReaderScope.User))
+            using (Readers listen = new Readers(ReaderScope.User))
             {
-                if (readers.Names.Count != 1) Assert.Inconclusive("Can't select a reader, " + readers.Names.Count + " present: " + String.Join(", ", readers.Names));
-
-                EidReader target = readers.OpenReader(readers.Names[0]);
+                EidCard target = listen.WaitForEid(new TimeSpan(0, 5, 0));
+                Assert.NotNull(target);
                 using (target)
                 {
                     X509Certificate2 auth = target.ReadCertificate(CertificateId.Authentication);
@@ -50,33 +50,5 @@ namespace Egelke.Eid.Client.Test
             }
         }
 
-        EventWaitHandle waitChange = new EventWaitHandle(false, EventResetMode.AutoReset);
-
-        [Test, Explicit]
-        public void CardChange()
-        {
-            EidReader target = new EidReader("ACS CCID USB Reader 0");
-            using (target)
-            {
-                //target.CardAction += new EventHandler<DeviceEventArgs>(target_CardAction);
-                //target.ReaderAction += new EventHandler<DeviceEventArgs>(target_ReaderAction);
-
-                //Wait for 2 events...
-                waitChange.WaitOne(new TimeSpan(0, 1, 0));
-                waitChange.WaitOne(new TimeSpan(0, 1, 0));
-            }
-        }
-
-        void target_ReaderAction(object sender, DeviceEventArgs e)
-        {
-            System.Console.Out.WriteLine(String.Format("Reader {2} status changed from {0} to {1}", e.PreviousState, e.NewState, e.DeviceName));
-            waitChange.Set();
-        }
-
-        void target_CardAction(object sender, DeviceEventArgs e)
-        {
-            System.Console.Out.WriteLine(String.Format("Card {2} status changed from {0} to {1}", e.PreviousState, e.NewState, e.DeviceName));
-            waitChange.Set();
-        }
     }
 }

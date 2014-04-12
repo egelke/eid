@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
-    <Compile Include="EidReaders.cs" />
+    <Compile Include="Readers.cs" />
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="ReaderScope.cs" />
     <Compile Include="SCard\CardAttrId.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="SCard\CardShareMode.cs" />
     <Compile Include="CertificateId.cs" />
     <Compile Include="SCard\ContextScope.cs" />
-    <Compile Include="EidReader.cs" />
+    <Compile Include="EidCard.cs" />
     <Compile Include="Attribute\FileSelectCmdAttribute.cs" />
     <Compile Include="SCard\NativeMethods.cs" />
     <Compile Include="Exception\NoCardException.cs" />
