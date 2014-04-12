@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1000]C:\Users\admin\Documents\GitHub\eid\eid-test\genIns.nunit</TopNode>
+  <SelectedNode>[0-1003]Egelke.Eid.Client.Test.EidWrapperTest.ReadCertificates</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1000]C:\Users\admin\Documents\GitHub\eid\eid-test\genIns.nunit" Expanded="true" />
+    <Node UniqueName="[0-1005]C:\Users\admin\Documents\GitHub\eid\eid-test\bin\Debug\Egelke.Eid.Client.Test.dll" Expanded="true" />
+    <Node UniqueName="[0-1006]Egelke" Expanded="true" />
+    <Node UniqueName="[0-1007]Egelke.Eid" Expanded="true" />
+    <Node UniqueName="[0-1008]Egelke.Eid.Client" Expanded="true" />
+    <Node UniqueName="[0-1009]Egelke.Eid.Client.Test" Expanded="true" />
+    <Node UniqueName="[0-1001]Egelke.Eid.Client.Test.EidWrapperTest" Expanded="true" />
+  </Nodes>
+</VisualState>

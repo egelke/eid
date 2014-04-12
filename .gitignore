@@ -41,6 +41,9 @@ local.properties
 *.user
 *.sln.docstates
 
+# Nuget
+[Pp]ackages/
+
 # Build results
 
 [Dd]ebug/
@@ -213,3 +216,4 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+release.snk
