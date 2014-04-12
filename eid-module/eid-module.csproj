@@ -53,27 +53,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
-    <Compile Include="CardAttrId.cs" />
-    <Compile Include="CardContextSafeHandler.cs" />
-    <Compile Include="CardDisposition.cs" />
+    <Compile Include="EidReaders.cs" />
+    <Compile Include="Helper\ExtensionMethods.cs" />
+    <Compile Include="ReaderScope.cs" />
+    <Compile Include="SCard\CardAttrId.cs" />
+    <Compile Include="SCard\CardContextSafeHandler.cs" />
+    <Compile Include="SCard\CardDisposition.cs" />
     <Compile Include="DeviceState.cs" />
     <Compile Include="DeviceEventArgs.cs" />
-    <Compile Include="CardPCI.cs" />
-    <Compile Include="CardProtocols.cs" />
-    <Compile Include="CardSafeHandler.cs" />
-    <Compile Include="CardShareMode.cs" />
-    <Compile Include="Certificate.cs" />
-    <Compile Include="ContextScope.cs" />
+    <Compile Include="SCard\CardPCI.cs" />
+    <Compile Include="SCard\CardProtocols.cs" />
+    <Compile Include="SCard\CardSafeHandler.cs" />
+    <Compile Include="SCard\CardShareMode.cs" />
+    <Compile Include="CertificateId.cs" />
+    <Compile Include="SCard\ContextScope.cs" />
     <Compile Include="EidReader.cs" />
-    <Compile Include="FileSelectCmdAttribute.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="NoCardException.cs" />
+    <Compile Include="Attribute\FileSelectCmdAttribute.cs" />
+    <Compile Include="SCard\NativeMethods.cs" />
+    <Compile Include="Exception\NoCardException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReaderException.cs" />
-    <Compile Include="ReaderState.cs" />
-    <Compile Include="SCARD_IO_REQUEST.cs" />
-    <Compile Include="SCARD_READERSTATE.cs" />
-    <Compile Include="UnsupportedCardException.cs" />
+    <Compile Include="Exception\ReaderException.cs" />
+    <Compile Include="SCard\ReaderState.cs" />
+    <Compile Include="SCard\SCARD_IO_REQUEST.cs" />
+    <Compile Include="SCard\SCARD_READERSTATE.cs" />
+    <Compile Include="Exception\UnsupportedCardException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="COPYING" />

@@ -24,17 +24,24 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Egelke.Eid.Client
 {
-    internal class CardContextSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
+    internal class CardSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
     {
-        private CardContextSafeHandler()
+
+        private CardSafeHandler()
             : base(true)
         {
 
         }
 
+        public CardSafeHandler(IntPtr preexistinghandle)
+            : base(true)
+        {
+            handle = preexistinghandle;
+        }
+
         protected override bool ReleaseHandle()
         {
-            return NativeMethods.SCardReleaseContext(handle) == 0;
+            return NativeMethods.SCardDisconnect(handle, CardDisposition.SCARD_LEAVE_CARD) == 0;
         }
     }
 }

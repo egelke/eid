@@ -32,104 +32,51 @@ namespace Egelke.Eid.Client
         private static readonly byte[] CMD_READ_BINARY = { 0x00, 0xB0, 0x00, 0x00, 0x00 };
         private static readonly byte[] EID_ATR_0 = new byte[] { 0x3B, 0x98, 0x13, 0x40, 0x0A, 0xA5, 0x03, 0x01, 0x01, 0x01, 0xAD, 0x13, 0x10 };
         private static readonly byte[] EID_ATR_1 = new byte[] { 0x3B, 0x98, 0x13, 0x40, 0x0A, 0xA5, 0x03, 0x01, 0x01, 0x01, 0xAD, 0x13, 0x11 };
-        
 
-        private static CardContextSafeHandler staticContext;
-
-        static EidReader()
-        {
-            uint retVal = NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_SYSTEM, IntPtr.Zero, IntPtr.Zero, out staticContext);
-            if (retVal != 0) throw new InvalidOperationException("Failed to create static context for reader: " + retVal.ToString("X"));
-
-            AppDomain.CurrentDomain.DomainUnload += new EventHandler(CurrentDomain_DomainUnload);
-        }
-
-        static void CurrentDomain_DomainUnload(object sender, EventArgs e)
-        {
-            staticContext.Close();
-        }
-
-        private static String[] MultiStringToStringArray(Char[] multiStr)
-        {
-            if (multiStr.Length == 1) return null; //no name found
-
-            int i = 0;
-            StringBuilder str = new StringBuilder();
-            List<String> strList = new List<string>();
-            while (true)
-            {
-                if (multiStr[i] != '\0')
-                {
-                    str.Append(multiStr[i]);
-                }
-                else
-                {
-                    strList.Add(str.ToString());
-                    if (multiStr[i + 1] == '\0') break;
-                    str.Clear();
-                }
-                i++;
-            }
-
-            return strList.ToArray();
-        }
-
-        public static String[] Readers
-        {
-            get
-            {
-                uint retVal;
-                int size = 0;
-                Char[] names = null;
-
-                retVal = NativeMethods.SCardListReaders(staticContext, IntPtr.Zero, names, ref size);
-                if (retVal != 0) throw new InvalidOperationException("Failed to list readers (length): " + retVal.ToString("X"));
-
-                names = new Char[size];
-                retVal = NativeMethods.SCardListReaders(staticContext, IntPtr.Zero, names, ref size);
-                if (retVal != 0) throw new InvalidOperationException("Failed to list readers: " + retVal.ToString("X"));
-
-                return MultiStringToStringArray(names);
-            }
-        }
-
-        private String readerName;
-        private CardContextSafeHandler instanceContext;
         private CardSafeHandler handler;
-        private Thread deviceActionListenerThread;
-        private bool disposed;
+        private CardContextSafeHandler context;
 
-        public event EventHandler<DeviceEventArgs> ReaderAction;
-        public event EventHandler<DeviceEventArgs> CardAction;
+        public String Name { get; private set; }
 
-        public EidReader(String readerName)
+        //private Thread deviceActionListenerThread;
+        //private bool disposed;
+
+        //public event EventHandler<DeviceEventArgs> ReaderAction;
+        //public event EventHandler<DeviceEventArgs> CardAction;
+
+        public EidReader(String name)
         {
-            this.readerName = readerName;
+            this.Name = name;
 
             //create a context
-            uint retVal = NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_USER, IntPtr.Zero, IntPtr.Zero, out instanceContext);
+            uint retVal = NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_USER, IntPtr.Zero, IntPtr.Zero, out context);
             if (retVal != 0) throw new InvalidOperationException("Failed to create context for reader: " + retVal.ToString("X"));
 
             //Get current state
             SCARD_READERSTATE[] readerStates = new SCARD_READERSTATE[1];
             readerStates[0] = new SCARD_READERSTATE();
-            readerStates[0].szReader = readerName;
+            readerStates[0].szReader = Name;
             readerStates[0].pvUserData = IntPtr.Zero;
             readerStates[0].dwCurrentState = ReaderState.SCARD_STATE_UNAWARE;
-            retVal = NativeMethods.SCardGetStatusChange(instanceContext, 0, readerStates, 1);
+            retVal = NativeMethods.SCardGetStatusChange(context, 0, readerStates, 1);
             if (retVal == 0x80100009L) throw new ReaderException("The specified reader is unknown");
             if (retVal != 0) throw new InvalidOperationException("Failed to get status of reader: " + retVal.ToString("X"));
 
 
             //create a listener for this card
-            disposed = false;
-            deviceActionListenerThread = new Thread(DeviceActionListener);
-            deviceActionListenerThread.IsBackground = true;
-            deviceActionListenerThread.Start(readerStates);
+            //disposed = false;
+            //deviceActionListenerThread = new Thread(DeviceActionListener);
+            //deviceActionListenerThread.IsBackground = true;
+            //deviceActionListenerThread.Start(readerStates);
+        }
+
+        ~EidReader()
+        {
+            Dispose(false);
         }
 
         
-
+        /*
         private void DeviceActionListener(Object obj)
         {
             uint retVal;
@@ -179,6 +126,7 @@ namespace Egelke.Eid.Client
                 threadContext.Close();
             }
         }
+         
 
         private DeviceState ReaderStatusToCardStatus(ReaderState state)
         {
@@ -199,6 +147,7 @@ namespace Egelke.Eid.Client
         {
             if (CardAction != null) CardAction(this, e);
         }
+         */
 
         private byte[] ReadRaw(byte[] fileSelect)
         {
@@ -265,7 +214,7 @@ namespace Egelke.Eid.Client
             }
         }
 
-        public X509Certificate2 ReadCertificate(Certificate cert)
+        public X509Certificate2 ReadCertificate(CertificateId cert)
         {
             byte[] fileSelect = ((FileSelectCmdAttribute)cert.GetType().GetMember(cert.ToString())[0].GetCustomAttributes(typeof(FileSelectCmdAttribute), false)[0]).Cmd;
             return new X509Certificate2(ReadRaw(fileSelect));
@@ -281,7 +230,7 @@ namespace Egelke.Eid.Client
         public void Connect()
         {
             CardProtocols protocol;
-            uint retVal = NativeMethods.SCardConnect(instanceContext, readerName, CardShareMode.SCARD_SHARE_EXCLUSIVE, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
+            uint retVal = NativeMethods.SCardConnect(context, Name, CardShareMode.SCARD_SHARE_EXCLUSIVE, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
             if (retVal == 0x80100069L) throw new NoCardException("Not card was found in the reader");
             if (retVal == 0x8010000BL) throw new ReaderException("The card is being accessed from a different context");
             if (retVal == 0x80100009L) throw new ReaderException("The specified reader is not connected");
@@ -336,9 +285,12 @@ namespace Egelke.Eid.Client
 
         protected virtual void Dispose(bool managed)
         {
-            disposed = true;
-            if (IsConnected) this.Disconnect();
-            instanceContext.Close();
+            if (managed)
+            {
+                //disposed = true;
+                if (IsConnected) this.Disconnect();
+                context.Close();
+            }
         }
     }
 }

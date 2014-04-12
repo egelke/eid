@@ -28,25 +28,25 @@ namespace Egelke.Eid.Client.Test
         [Test]
         public void ReadCertificates()
         {
-            String[] readers = EidReader.Readers;
-            if (readers.Length != 1) Assert.Inconclusive("Can't select a reader, " + readers.Length + " present: " + String.Join(", ", readers));
 
-            EidReader target = new EidReader(readers[0]);
-            using (target)
+            using (EidReaders readers = new EidReaders(ReaderScope.User))
             {
-                target.CardAction += new EventHandler<DeviceEventArgs>(target_CardAction);
-                target.Connect();
+                if (readers.Names.Count != 1) Assert.Inconclusive("Can't select a reader, " + readers.Names.Count + " present: " + String.Join(", ", readers.Names));
 
-                X509Certificate2 auth = target.ReadCertificate(Certificate.Authentication);
-                X509Certificate2 sign = target.ReadCertificate(Certificate.Signature);
-                X509Certificate2 ca = target.ReadCertificate(Certificate.CA);
-                X509Certificate2 root = target.ReadCertificate(Certificate.Root);
+                EidReader target = readers.OpenReader(readers.Names[0]);
+                using (target)
+                {
+                    X509Certificate2 auth = target.ReadCertificate(CertificateId.Authentication);
+                    X509Certificate2 sign = target.ReadCertificate(CertificateId.Signature);
+                    X509Certificate2 ca = target.ReadCertificate(CertificateId.CA);
+                    X509Certificate2 root = target.ReadCertificate(CertificateId.Root);
 
-                Assert.AreNotEqual(auth.Subject, sign.Subject);
-                Assert.AreEqual(sign.Issuer, ca.Subject);
-                Assert.AreEqual(auth.Issuer, ca.Subject);
-                Assert.AreEqual(ca.Issuer, root.Subject);
-                Assert.AreEqual(root.Issuer, root.Subject);
+                    Assert.AreNotEqual(auth.Subject, sign.Subject);
+                    Assert.AreEqual(sign.Issuer, ca.Subject);
+                    Assert.AreEqual(auth.Issuer, ca.Subject);
+                    Assert.AreEqual(ca.Issuer, root.Subject);
+                    Assert.AreEqual(root.Issuer, root.Subject);
+                }
             }
         }
 
@@ -58,8 +58,8 @@ namespace Egelke.Eid.Client.Test
             EidReader target = new EidReader("ACS CCID USB Reader 0");
             using (target)
             {
-                target.CardAction += new EventHandler<DeviceEventArgs>(target_CardAction);
-                target.ReaderAction += new EventHandler<DeviceEventArgs>(target_ReaderAction);
+                //target.CardAction += new EventHandler<DeviceEventArgs>(target_CardAction);
+                //target.ReaderAction += new EventHandler<DeviceEventArgs>(target_ReaderAction);
 
                 //Wait for 2 events...
                 waitChange.WaitOne(new TimeSpan(0, 1, 0));

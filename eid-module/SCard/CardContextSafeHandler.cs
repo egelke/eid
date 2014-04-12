@@ -20,18 +20,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace Egelke.Eid.Client
 {
-    public enum Certificate
+    internal class CardContextSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
     {
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x38 })]
-        Authentication,
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x39 })]
-        Signature,
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x3A })]
-        CA,
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x3B })]
-        Root
+        private CardContextSafeHandler()
+            : base(true)
+        {
+        }
+
+        public CardContextSafeHandler(IntPtr preexistingHandle)
+            : base(true)
+        {
+            this.handle = preexistingHandle;
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            return NativeMethods.SCardReleaseContext(handle) == 0;
+        }
     }
 }
