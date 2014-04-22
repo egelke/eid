@@ -23,7 +23,7 @@ using System.Text;
 
 namespace Egelke.Eid.Client
 {
-    internal enum CardShareMode : int
+	public enum CardShareMode : int
     {
         SCARD_SHARE_EXCLUSIVE  = 1,
         SCARD_SHARE_SHARED = 2, //Not on CE

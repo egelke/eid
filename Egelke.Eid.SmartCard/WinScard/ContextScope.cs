@@ -20,23 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.InteropServices;
 
 namespace Egelke.Eid.Client
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal class SCARD_IO_REQUEST
+	public enum ContextScope : int
     {
-        internal static readonly SCARD_IO_REQUEST T0 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T0);
-        internal static readonly SCARD_IO_REQUEST T1 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T1);
-
-        private uint dwProtocol;
-        private int cbPciLength;
-
-        private SCARD_IO_REQUEST(CardPCI protocol)
-        {
-            this.dwProtocol = (uint) protocol;
-            this.cbPciLength = Marshal.SizeOf(typeof(SCARD_IO_REQUEST));
-        }
+        SCARD_SCOPE_USER = 0, //Not for CE
+        SCARD_SCOPE_TERMINAL = 1, //Not defined in doc
+        SCARD_SCOPE_SYSTEM = 2
     }
 }

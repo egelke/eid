@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 namespace Egelke.Eid.Client
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    internal struct SCARD_READERSTATE
+    public struct SCARD_READERSTATE
     {
         public String szReader;
 

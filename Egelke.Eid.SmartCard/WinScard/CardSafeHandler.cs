@@ -24,7 +24,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Egelke.Eid.Client
 {
-    internal class CardSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
+	public class CardSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
     {
 
         private CardSafeHandler()

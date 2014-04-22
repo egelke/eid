@@ -39,9 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Win32\Kernel32.cs" />
-    <Compile Include="Win32\WinScard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinScard\CardAttrId.cs" />
+    <Compile Include="WinScard\CardContextSafeHandler.cs" />
+    <Compile Include="WinScard\CardDisposition.cs" />
+    <Compile Include="WinScard\CardPCI.cs" />
+    <Compile Include="WinScard\CardProtocols.cs" />
+    <Compile Include="WinScard\CardSafeHandler.cs" />
+    <Compile Include="WinScard\CardShareMode.cs" />
+    <Compile Include="WinScard\ContextScope.cs" />
+    <Compile Include="WinScard\NativeMethods.cs" />
+    <Compile Include="WinScard\ReaderState.cs" />
+    <Compile Include="WinScard\SCARD_IO_REQUEST.cs" />
+    <Compile Include="WinScard\SCARD_READERSTATE.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

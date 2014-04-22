@@ -23,10 +23,11 @@ using System.Text;
 
 namespace Egelke.Eid.Client
 {
-    internal enum ContextScope : int
+	public enum CardDisposition : int
     {
-        SCARD_SCOPE_USER = 0, //Not for CE
-        SCARD_SCOPE_TERMINAL = 1, //Not defined in doc
-        SCARD_SCOPE_SYSTEM = 2
+        SCARD_LEAVE_CARD = 0,
+        SCARD_RESET_CARD = 1,
+        SCARD_UNPOWER_CARD = 2,
+        SCARD_EJECT_CARD = 3
     }
 }

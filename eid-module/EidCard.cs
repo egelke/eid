@@ -31,7 +31,7 @@ namespace Egelke.Eid.Client
     {
         private static readonly byte[] CMD_READ_BINARY = { 0x00, 0xB0, 0x00, 0x00, 0x00 };
 
-        private CardSafeHandler handler;
+        private readonly CardSafeHandler handler;
         private CardContextSafeHandler context;
 
         public String ReaderName { get; private set; }

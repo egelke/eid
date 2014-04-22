@@ -20,14 +20,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Egelke.Eid.Client
 {
-    internal enum CardDisposition : int
+    [StructLayout(LayoutKind.Sequential)]
+    public class SCARD_IO_REQUEST
     {
-        SCARD_LEAVE_CARD = 0,
-        SCARD_RESET_CARD = 1,
-        SCARD_UNPOWER_CARD = 2,
-        SCARD_EJECT_CARD = 3
+	    public static readonly SCARD_IO_REQUEST T0 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T0);
+        internal static readonly SCARD_IO_REQUEST T1 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T1);
+
+        private uint dwProtocol;
+        private int cbPciLength;
+
+        private SCARD_IO_REQUEST(CardPCI protocol)
+        {
+            this.dwProtocol = (uint) protocol;
+            this.cbPciLength = Marshal.SizeOf(typeof(SCARD_IO_REQUEST));
+        }
     }
 }
