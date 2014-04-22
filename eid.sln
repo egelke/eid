@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9A7AC1
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Egelke.Eid.SmartCard", "Egelke.Eid.SmartCard\Egelke.Eid.SmartCard.csproj", "{47536D0A-E9E9-4C58-9B40-E162B3EA8268}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{396848B2-F017-439A-BD3D-D1268B488697}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{396848B2-F017-439A-BD3D-D1268B488697}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{396848B2-F017-439A-BD3D-D1268B488697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47536D0A-E9E9-4C58-9B40-E162B3EA8268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47536D0A-E9E9-4C58-9B40-E162B3EA8268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47536D0A-E9E9-4C58-9B40-E162B3EA8268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47536D0A-E9E9-4C58-9B40-E162B3EA8268}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
