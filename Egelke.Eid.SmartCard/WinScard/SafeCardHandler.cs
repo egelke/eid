@@ -17,29 +17,20 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Win32.SafeHandles;
 
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
-    public class CardContextSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
+	public class SafeCardHandler : SafeHandleZeroOrMinusOneIsInvalid
     {
-        private CardContextSafeHandler()
-            : base(true)
+        public SafeCardHandler(IntPtr preexistinghandle) : base(true)
         {
-        }
-
-        public CardContextSafeHandler(IntPtr preexistingHandle)
-            : base(true)
-        {
-            this.handle = preexistingHandle;
+            handle = preexistinghandle;
         }
 
         protected override bool ReleaseHandle()
         {
-            return NativeMethods.SCardReleaseContext(handle) == 0;
+            return NativeMethods.SCardDisconnect(handle, CardDisposition.SCARD_LEAVE_CARD) == 0;
         }
     }
 }

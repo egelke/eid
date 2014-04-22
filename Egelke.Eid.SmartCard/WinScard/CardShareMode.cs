@@ -16,15 +16,10 @@
  *  along with .Net eID Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
-	public enum CardShareMode : int
-    {
+	public enum CardShareMode
+	{
         SCARD_SHARE_EXCLUSIVE  = 1,
         SCARD_SHARE_SHARED = 2, //Not on CE
         SCARD_SHARE_DIRECT = 3 //Not on CE

@@ -17,12 +17,9 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct SCARD_READERSTATE

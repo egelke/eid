@@ -17,14 +17,11 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
     [Flags]
-    public enum CardProtocols : int
+    public enum CardProtocols
     {
         SCARD_PROTOCOL_UNDEFINED = 0,
         SCARD_PROTOCOL_T0 = 1,

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Egelke.Eid.Client
 {
-    public enum ReaderScope
+    public enum ReaderScope : uint
     {
         Null,
         User,

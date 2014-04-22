@@ -16,15 +16,10 @@
  *  along with .Net eID Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
-	public enum ContextScope : int
-    {
+	public enum ContextScope
+	{
         SCARD_SCOPE_USER = 0, //Not for CE
         SCARD_SCOPE_TERMINAL = 1, //Not defined in doc
         SCARD_SCOPE_SYSTEM = 2

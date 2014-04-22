@@ -16,24 +16,20 @@
  *  along with .Net eID Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
     [StructLayout(LayoutKind.Sequential)]
     public class SCARD_IO_REQUEST
     {
-	    public static readonly SCARD_IO_REQUEST T0 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T0);
-        internal static readonly SCARD_IO_REQUEST T1 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T1);
+	    public static readonly SCARD_IO_REQUEST T0 = new SCARD_IO_REQUEST(ProtocolControlInformation.SCARD_PCI_T0);
+        internal static readonly SCARD_IO_REQUEST T1 = new SCARD_IO_REQUEST(ProtocolControlInformation.SCARD_PCI_T1);
 
         private uint dwProtocol;
         private int cbPciLength;
 
-        private SCARD_IO_REQUEST(CardPCI protocol)
+        private SCARD_IO_REQUEST(ProtocolControlInformation protocol)
         {
             this.dwProtocol = (uint) protocol;
             this.cbPciLength = Marshal.SizeOf(typeof(SCARD_IO_REQUEST));

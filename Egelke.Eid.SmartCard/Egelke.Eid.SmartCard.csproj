@@ -41,11 +41,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinScard\CardAttrId.cs" />
-    <Compile Include="WinScard\CardContextSafeHandler.cs" />
+    <Compile Include="WinScard\SafeCardContextHandle.cs" />
     <Compile Include="WinScard\CardDisposition.cs" />
-    <Compile Include="WinScard\CardPCI.cs" />
+    <Compile Include="WinScard\ProtocolControlInformation.cs" />
     <Compile Include="WinScard\CardProtocols.cs" />
-    <Compile Include="WinScard\CardSafeHandler.cs" />
+    <Compile Include="WinScard\SafeCardHandler.cs" />
     <Compile Include="WinScard\CardShareMode.cs" />
     <Compile Include="WinScard\ContextScope.cs" />
     <Compile Include="WinScard\NativeMethods.cs" />

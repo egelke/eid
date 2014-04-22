@@ -16,16 +16,17 @@
  *  along with .Net eID Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.SmartCard.WinScard
 {
-    internal enum CardPCI : uint
+    internal enum ProtocolControlInformation : uint
     {
+		/// <summary>
+		/// An asynchronous, character-oriented half-duplex transmission protocol.
+		/// </summary>
         SCARD_PCI_T0 = 1,
+		/// <summary>
+		/// An asynchronous, block-oriented half-duplex transmission protocol.
+		/// </summary>
         SCARD_PCI_T1 = 2,
         SCARD_PCI_RAW = 4 //not supported, but defined...
     }

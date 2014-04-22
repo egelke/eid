@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Egelke.Eid.SmartCard.WinScard;
 
 namespace Egelke.Eid.Client
 {
     public class Readers : IDisposable
     {
-        private static char[] EID_CARD_NAME = { 'B', 'e', 'i', 'd', '\0', '\0' };
 
-        private CardContextSafeHandler context;
+	    private static char[] EID_CARD_NAME = { 'B', 'e', 'i', 'd', '\0', '\0' };
+
+        private SafeCardContextHandle context;
 
         public Readers(ReaderScope scope)
         {
@@ -18,7 +20,7 @@ namespace Egelke.Eid.Client
             switch (scope)
             {
                 case ReaderScope.Null:
-                    context = new CardContextSafeHandler(IntPtr.Zero);
+                    context = new SafeCardContextHandle(IntPtr.Zero);
                     break;
                 case ReaderScope.System:
                     retVal = NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_SYSTEM, IntPtr.Zero, IntPtr.Zero, out context);
@@ -72,7 +74,7 @@ namespace Egelke.Eid.Client
             if (names.Count == 0) return null;
 
             //Make a list of all readers in scope
-            List<SCARD_READERSTATE> readerStates = new List<SCARD_READERSTATE>();
+            var readerStates = new List<SCARD_READERSTATE>();
             foreach (String name in names)
             {
                 SCARD_READERSTATE readerState = new SCARD_READERSTATE();

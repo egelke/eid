@@ -24,6 +24,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
+using Egelke.Eid.SmartCard.WinScard;
 
 namespace Egelke.Eid.Client
 {
@@ -31,12 +32,12 @@ namespace Egelke.Eid.Client
     {
         private static readonly byte[] CMD_READ_BINARY = { 0x00, 0xB0, 0x00, 0x00, 0x00 };
 
-        private readonly CardSafeHandler handler;
-        private CardContextSafeHandler context;
+        private readonly SafeCardHandler handler;
+        private SafeCardContextHandle context;
 
         public String ReaderName { get; private set; }
 
-        internal EidCard(CardContextSafeHandler context, String readerName)
+        internal EidCard(SafeCardContextHandle context, String readerName)
         {
             this.context = context;
             this.ReaderName = readerName;
