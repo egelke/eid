@@ -18,7 +18,7 @@
 
 namespace Egelke.Eid.SmartCard.WinScard
 {
-    internal enum CardAttrId : int
+	internal enum CardAttrId : int
     {
         SCARD_ATTR_ATR_STRING = 590595
     }

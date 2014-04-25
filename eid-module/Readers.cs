@@ -16,7 +16,7 @@ namespace Egelke.Eid.Client
 
         public Readers(ReaderScope scope)
         {
-            uint retVal;
+            int retVal;
             switch (scope)
             {
                 case ReaderScope.Null:
@@ -46,7 +46,7 @@ namespace Egelke.Eid.Client
         {
             get
             {
-                uint retVal;
+                int retVal;
                 int size = 0;
                 char[] names = null;
 
@@ -64,7 +64,7 @@ namespace Egelke.Eid.Client
 
         public EidCard WaitForEid(TimeSpan timeout)
         {
-            uint retVal;
+            int retVal;
             bool requestedEid = false;
             bool wrongCard = false;
             DateTime start = DateTime.Now;

@@ -43,7 +43,7 @@ namespace Egelke.Eid.Client
             this.ReaderName = readerName;
 
             CardProtocols protocol;
-            uint retVal = NativeMethods.SCardConnect(context, ReaderName, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
+            int retVal = NativeMethods.SCardConnect(context, ReaderName, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
             if (retVal == 0x80100069L) throw new NoCardException("Not card was found in the reader");
             if (retVal == 0x8010000BL) throw new ReaderException("The card is being accessed from a different context");
             if (retVal == 0x80100009L) throw new ReaderException("The specified reader does not exist");
@@ -57,7 +57,7 @@ namespace Egelke.Eid.Client
 
         private byte[] ReadRaw(byte[] fileSelect)
         {
-            uint retVal;
+            int retVal;
 
             retVal = NativeMethods.SCardBeginTransaction(handler);
             if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
