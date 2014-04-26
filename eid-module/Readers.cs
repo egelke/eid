@@ -87,7 +87,7 @@ namespace Egelke.Eid.Client
             while (true)
             {
                 //Lets see if there is an eID is available in one of the readers
-                retVal = NativeMethods.SCardLocateCards(context, EID_CARD_NAME, readerStateArray, readerStateArray.Length);
+                retVal = NativeMethods.SCardLocateCards(context, "Beid", readerStateArray, readerStateArray.Length);
                 if (retVal != 0) throw new InvalidOperationException("Failed to locate card: 0x" + retVal.ToString("X"));
 
                 //check if one of the readers has the eID indicator, update the status in the mean time

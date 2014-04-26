@@ -1,15 +1,10 @@
-﻿using Egelke.Eid.Client;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 
 namespace Egelke.Eid.Client.Test
 {
-    
-    
-    /// <summary>
+	/// <summary>
     ///This is a test class for EidWrapperTest and is intended
     ///to contain all EidWrapperTest Unit Tests
     ///</summary>

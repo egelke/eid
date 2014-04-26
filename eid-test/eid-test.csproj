@@ -76,7 +76,13 @@
   <ItemGroup>
     <Compile Include="EidWrapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SmartCardReaderTests\When_enumerating_available_readers.cs" />
+    <Compile Include="TestContext.cs" />
+    <Compile Include="WithCard\When_enumerating_available_readers.cs" />
+    <Compile Include="WithoutReader\When_getting_a_reader_by_name.cs" />
+    <Compile Include="WithReaderButNoCard\When_enumerating_available_readers.cs" />
+    <Compile Include="WithoutReader\When_enumerating_available_readers.cs" />
+    <Compile Include="WithReaderButNoCard\When_getting_a_reader_by_card_name.cs" />
+    <Compile Include="WithReaderButNoCard\When_getting_a_reader_by_name.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Egelke.Eid.SmartCard\Egelke.Eid.SmartCard.csproj">
