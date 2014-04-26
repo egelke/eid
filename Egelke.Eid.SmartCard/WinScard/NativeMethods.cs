@@ -43,29 +43,29 @@ namespace Egelke.Eid.SmartCard.WinScard
 		public static extern int SCardGetStatusChange(SafeCardContextHandle hContext, int dwTimeout, [In, Out] SCARD_READERSTATE[] rgReaderStates, int cReaders);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
-		public static extern int SCardConnect(SafeCardContextHandle hContext, String szReader, CardShareMode dwShareMode, CardProtocols dwPreferredProtocols, out SafeCardHandler phCard, out CardProtocols pdwActiveProtocol);
+		public static extern int SCardConnect(SafeCardContextHandle hContext, String szReader, CardShareMode dwShareMode, CardProtocols dwPreferredProtocols, out SafeCardHandle phCard, out CardProtocols pdwActiveProtocol);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
 		internal static extern int SCardDisconnect(IntPtr hCard, CardDisposition dwDisposition);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
-		internal static extern int SCardGetAttrib(SafeCardHandler hCard, CardAttrId dwAttrId, IntPtr pbAttr, ref int pcbAttrLen);
+		internal static extern int SCardGetAttrib(SafeCardHandle hCard, CardAttrId dwAttrId, IntPtr pbAttr, ref int pcbAttrLen);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
-		public static extern int SCardBeginTransaction(SafeCardHandler hCard);
+		public static extern int SCardBeginTransaction(SafeCardHandle hCard);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
-		public static extern int SCardEndTransaction(SafeCardHandler hCard, CardDisposition dwDisposition);
+		public static extern int SCardEndTransaction(SafeCardHandle hCard, CardDisposition dwDisposition);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
-		public static extern int SCardTransmit(SafeCardHandler hCard, SCARD_IO_REQUEST pioSendPci, byte[] pbSendBuffer, int cbSendLength, [In, Out] SCARD_IO_REQUEST pioRecvPci, [Out] byte[] pbRecvBuffer, [In, Out] ref int pcbRecvLength);
+		public static extern int SCardTransmit(SafeCardHandle hCard, SCARD_IO_REQUEST pioSendPci, byte[] pbSendBuffer, int cbSendLength, [In, Out] SCARD_IO_REQUEST pioRecvPci, [Out] byte[] pbRecvBuffer, [In, Out] ref int pcbRecvLength);
 
 		[DllImport("winscard.dll", CharSet = CharSet.Auto)]
 		internal static extern int SCardFreeMemory(SafeCardContextHandle hContext, IntPtr pvMem);
 
 		[DllImport("WinScard.dll")]
 		public static extern int SCardStatus(
-			SafeCardHandler hCard,
+			SafeCardHandle hCard,
 			string szReaderName,
 			ref int pcchReaderLen,
 			out CardState pdwState,

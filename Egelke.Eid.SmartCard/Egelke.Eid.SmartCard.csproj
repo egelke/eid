@@ -50,7 +50,7 @@
     <Compile Include="WinScard\CardDisposition.cs" />
     <Compile Include="WinScard\ProtocolControlInformation.cs" />
     <Compile Include="WinScard\CardProtocols.cs" />
-    <Compile Include="WinScard\SafeCardHandler.cs" />
+    <Compile Include="WinScard\SafeCardHandle.cs" />
     <Compile Include="WinScard\CardShareMode.cs" />
     <Compile Include="WinScard\ContextScope.cs" />
     <Compile Include="WinScard\NativeMethods.cs" />

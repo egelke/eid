@@ -32,7 +32,7 @@ namespace Egelke.Eid.Client
     {
         private static readonly byte[] CMD_READ_BINARY = { 0x00, 0xB0, 0x00, 0x00, 0x00 };
 
-        private readonly SafeCardHandler handler;
+        private readonly SafeCardHandle handle;
         private SafeCardContextHandle context;
 
         public String ReaderName { get; private set; }
@@ -43,7 +43,7 @@ namespace Egelke.Eid.Client
             this.ReaderName = readerName;
 
             CardProtocols protocol;
-            int retVal = NativeMethods.SCardConnect(context, ReaderName, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
+            int retVal = NativeMethods.SCardConnect(context, ReaderName, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handle, out protocol);
             if (retVal == 0x80100069L) throw new NoCardException("Not card was found in the reader");
             if (retVal == 0x8010000BL) throw new ReaderException("The card is being accessed from a different context");
             if (retVal == 0x80100009L) throw new ReaderException("The specified reader does not exist");
@@ -59,7 +59,7 @@ namespace Egelke.Eid.Client
         {
             int retVal;
 
-            retVal = NativeMethods.SCardBeginTransaction(handler);
+            retVal = NativeMethods.SCardBeginTransaction(handle);
             if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
             if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
             if (retVal != 0) throw new InvalidOperationException("Failed to start transaction: 0x" + retVal.ToString("X"));
@@ -68,7 +68,7 @@ namespace Egelke.Eid.Client
                 int rspLen = 258;
                 byte[] rsp = new byte[rspLen];
 
-                retVal = NativeMethods.SCardTransmit(handler, SCARD_IO_REQUEST.T0, fileSelect, fileSelect.Length, null, rsp, ref rspLen);
+                retVal = NativeMethods.SCardTransmit(handle, SCARD_IO_REQUEST.T0, fileSelect, fileSelect.Length, null, rsp, ref rspLen);
                 if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
                 if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
                 if (retVal != 0) throw new InvalidOperationException("Failed to select file: 0x" + retVal.ToString("X"));
@@ -91,7 +91,7 @@ namespace Egelke.Eid.Client
                     cmd[3] = (byte)(offset & 0xFF);
 
                     rspLen = rsp.Length;
-                    retVal = NativeMethods.SCardTransmit(handler, SCARD_IO_REQUEST.T0, cmd, cmd.Length, null, rsp, ref rspLen);
+                    retVal = NativeMethods.SCardTransmit(handle, SCARD_IO_REQUEST.T0, cmd, cmd.Length, null, rsp, ref rspLen);
                     if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
                     if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
                     if (retVal != 0) throw new InvalidOperationException("Failed to read bytes: " + retVal.ToString("X"));
@@ -121,7 +121,7 @@ namespace Egelke.Eid.Client
             }
             finally
             {
-                retVal = NativeMethods.SCardEndTransaction(handler, CardDisposition.SCARD_LEAVE_CARD);
+                retVal = NativeMethods.SCardEndTransaction(handle, CardDisposition.SCARD_LEAVE_CARD);
                 if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
                 if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
                 if (retVal != 0) throw new InvalidOperationException("Failed to end transaction: 0x" + retVal.ToString("X"));
@@ -143,7 +143,7 @@ namespace Egelke.Eid.Client
         {
             if (managed)
             {
-                if (!handler.IsInvalid && !handler.IsClosed) handler.Close();
+                if (!handle.IsInvalid && !handle.IsClosed) handle.Close();
             }
         }
     }

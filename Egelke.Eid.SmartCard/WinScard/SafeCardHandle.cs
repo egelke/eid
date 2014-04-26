@@ -21,19 +21,19 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Egelke.Eid.SmartCard.WinScard
 {
-	public class SafeCardHandler : SafeHandleZeroOrMinusOneIsInvalid
-    {
+	public class SafeCardHandle : SafeHandleZeroOrMinusOneIsInvalid
+	{
 		// important: required for P/Invoke
-		private SafeCardHandler() : base(false) { }
+		private SafeCardHandle() : base(false) { }
 
-        public SafeCardHandler(IntPtr preexistinghandle) : base(true)
-        {
-            handle = preexistinghandle;
-        }
+		public SafeCardHandle(IntPtr preexistinghandle) : base(true)
+		{
+			handle = preexistinghandle;
+		}
 
-        protected override bool ReleaseHandle()
-        {
-            return NativeMethods.SCardDisconnect(handle, CardDisposition.SCARD_LEAVE_CARD) == 0;
-        }
-    }
+		protected override bool ReleaseHandle()
+		{
+			return NativeMethods.SCardDisconnect(handle, CardDisposition.SCARD_LEAVE_CARD) == 0;
+		}
+	}
 }
