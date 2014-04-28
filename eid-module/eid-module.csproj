@@ -84,8 +84,7 @@
   <PropertyGroup>
     <PostBuildEvent>SET nuget="$(SolutionDir)packages\NuGet.CommandLine.2.8.1\tools\nuget.exe"
 %25nuget%25 pack "$(ProjectPath)" -IncludeReferencedProjects -Prop Configuration=$(ConfigurationName)
-%25nuget%25 pack "$(ProjectPath)"  -Symbols
-</PostBuildEvent>
+%25nuget%25 pack "$(ProjectPath)"  -Symbols</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

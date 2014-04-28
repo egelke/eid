@@ -7,7 +7,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle(".Net eID Client")]
 [assembly: AssemblyDescription("Belgium eID client in .Net")]
-[assembly: AssemblyConfiguration("Beta")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("Egelke BVBA")]
 [assembly: AssemblyProduct(".Net eID Client")]
 [assembly: AssemblyCopyright("Copyright © Egelke BVBA 2014")]
@@ -34,7 +38,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.0")]
 [assembly: AssemblyFileVersion("0.1.0")]
-[assembly: AssemblyInformationalVersion("0.1.0-Beta1")]
+[assembly: AssemblyInformationalVersion("0.1.0")]
 
 #if DEBUG
 [assembly: AssemblyKeyFile(@"../debug.snk")]
