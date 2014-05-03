@@ -77,11 +77,15 @@
     <Compile Include="EidWrapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestContext.cs" />
+    <Compile Include="WithCard\When_connecting_to_an_exclusively_connected_reader.cs" />
+    <Compile Include="WithCard\When_connecting_to_an_non_exclusively_connected_reader.cs" />
     <Compile Include="WithCard\When_connecting_to_the_reader.cs" />
+    <Compile Include="WithCard\When_connecting_to_the_reader_in_shared_mode.cs" />
     <Compile Include="WithCard\When_disconnecting_from_the_reader.cs" />
     <Compile Include="WithCard\When_disposing_the_reader.cs" />
     <Compile Include="WithCard\When_enumerating_available_readers_in_system_scope.cs" />
     <Compile Include="WithCard\When_enumerating_available_readers_in_user_scope.cs" />
+    <Compile Include="WithCard\When_getting_the_reader_state.cs" />
     <Compile Include="WithoutReader\When_enumerating_available_readers_in_system_scope.cs" />
     <Compile Include="WithoutReader\When_enumerating_available_readers_in_user_scope.cs" />
     <Compile Include="WithoutReader\When_getting_a_reader_by_name.cs" />

@@ -27,13 +27,13 @@ namespace Egelke.Eid.SmartCard
 		/// Establishes a connection to the device.
 		/// </summary>
 		/// <returns>true indicates the connection was established. fase indicates the connection was already established earlier.</returns>
-		public bool Connect()
+		public bool Connect(bool shared = false)
 		{
 			if (Connected) return false;
 
 			contextHandle = GetContext(contextScope);
 			CardProtocols protocol;
-			SmartCardException.CheckReturnCode(NativeMethods.SCardConnect(contextHandle, Name, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0, out cardHandle, out protocol));
+			SmartCardException.CheckReturnCode(NativeMethods.SCardConnect(contextHandle, Name, shared ? CardShareMode.SCARD_SHARE_SHARED : CardShareMode.SCARD_SHARE_EXCLUSIVE, CardProtocols.SCARD_PROTOCOL_T0, out cardHandle, out protocol));
 			return true;
 		}
 

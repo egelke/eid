@@ -24,7 +24,7 @@ namespace Egelke.Eid.SmartCard.WinScard
 	public class SafeCardHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
 		// important: required for P/Invoke
-		private SafeCardHandle() : base(false) { }
+		private SafeCardHandle() : base(true) { }
 
 		public SafeCardHandle(IntPtr preexistinghandle) : base(true)
 		{

@@ -14,14 +14,5 @@ namespace Egelke.Eid.Client.Test.WithReaderButNoCard
 			var reader = SmartCardReader.GetReader(TestContext.READER_NAME);
 			Assert.IsNotNull(reader);
 		}
-
-		//[Test]
-		//public void the_reader_satatus_should_be()
-		//{
-		//	var reader = SmartCardReader.GetReader(TestContext.READER_NAME);
-		//	reader.Connect();
-		//	CardState cardState = reader.GetCardState();
-		//	Assert.IsNotNull(cardState);
-		//}
 	}
 }
