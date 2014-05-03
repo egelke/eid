@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using Egelke.Eid.SmartCard;
 using NUnit.Framework;
 
-namespace Egelke.Eid.Client.Test.WithReaderButNoCard
+namespace Egelke.Eid.Client.Test.WithoutReader
 {
 	[TestFixture]
 	public class When_getting_a_reader_by_card_name

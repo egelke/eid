@@ -85,9 +85,13 @@
     <Compile Include="WithCard\When_disposing_the_reader.cs" />
     <Compile Include="WithCard\When_enumerating_available_readers_in_system_scope.cs" />
     <Compile Include="WithCard\When_enumerating_available_readers_in_user_scope.cs" />
+    <Compile Include="WithCard\When_getting_a_reader_by_card_name.cs" />
+    <Compile Include="WithCard\When_getting_a_reader_by_name.cs" />
     <Compile Include="WithCard\When_getting_the_reader_state.cs" />
+    <Compile Include="WithNonEidCard\When_getting_a_reader_by_card_name.cs" />
     <Compile Include="WithoutReader\When_enumerating_available_readers_in_system_scope.cs" />
     <Compile Include="WithoutReader\When_enumerating_available_readers_in_user_scope.cs" />
+    <Compile Include="WithoutReader\When_getting_a_reader_by_card_name.cs" />
     <Compile Include="WithoutReader\When_getting_a_reader_by_name.cs" />
     <Compile Include="WithReaderButNoCard\When_connecting_to_the_reader.cs" />
     <Compile Include="WithReaderButNoCard\When_enumerating_available_readers_in_system_scope.cs" />
