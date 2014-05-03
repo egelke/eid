@@ -16,6 +16,11 @@ namespace Egelke.Eid.SmartCard
 			Name = name;
 		}
 
+		~SmartCardReader()
+		{
+			Dispose(false);
+		}
+
 		public string Name { get; private set; }
 
 		/// <summary>
@@ -36,35 +41,28 @@ namespace Egelke.Eid.SmartCard
 		/// Closes the connection to the device.
 		/// </summary>
 		/// <returns>true indicates the connection has been closed. false indicates the connection was already closed.</returns>
-		public bool Disconnect()
+		public void Disconnect()
 		{
-			if (!Connected) return false;
+			if (!Connected) return;
 
-			cardHandle.Dispose();
-			cardHandle = null;
-
-			contextHandle.Dispose();
-			contextHandle = null;
-
-			return true;
+			Dispose(true);
 		}
 
 		public bool Connected { get { return contextHandle != null; } }
 
 		public CardState GetCardState()
 		{
-			return EnsureConntected(() =>
-			{
-				var readerLenght = 0;
-				CardState state;
-				CardProtocols prot;
-				var atr = new byte[32];
-				var length = 32;
+			EnsureConnected();
+			
+			var readerLenght = 0;
+			CardState state;
+			CardProtocols prot;
+			var atr = new byte[32];
+			var length = 32;
 
-				SmartCardException.CheckReturnCode(NativeMethods.SCardStatus(cardHandle, null, ref readerLenght, out state, out prot, atr, ref length));
+			SmartCardException.CheckReturnCode(NativeMethods.SCardStatus(cardHandle, null, ref readerLenght, out state, out prot, atr, ref length));
 
-				return state;
-			});
+			return state;
 		}
 
 		public override string ToString()
@@ -74,23 +72,24 @@ namespace Egelke.Eid.SmartCard
 
 		public void Dispose()
 		{
-			// TODO
+			Dispose(true);
 		}
 
-		private T EnsureConntected<T>(Func<T> func)
+		// Just in case, this is note really necessary
+		protected virtual void Dispose(bool disposing)
 		{
-			var shouldDisconnect = Connect();
-			var ret = func();
-			if (shouldDisconnect) Disconnect();
+			if (!disposing) return;
+			
+			cardHandle.Dispose();
+			cardHandle = null;
 
-			return ret;
+			contextHandle.Dispose();
+			contextHandle = null;
 		}
 
-		private void EnsureConntected(Action action)
+		private void EnsureConnected()
 		{
-			var shouldDisconnect = Connect();
-			action();
-			if (shouldDisconnect) Disconnect();
+			if(!Connected) throw new InvalidOperationException("This operation requies the reader to be connected. Call Conntect() to establish a connection.");
 		}
 	}
 }
