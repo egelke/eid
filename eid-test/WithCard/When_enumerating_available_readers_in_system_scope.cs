@@ -1,17 +1,18 @@
 ﻿using System.Linq;
 using Egelke.Eid.SmartCard;
+using Egelke.Eid.SmartCard.WinScard;
 using NUnit.Framework;
 
 namespace Egelke.Eid.Client.Test.WithCard
 {
 	[TestFixture]
-	public class When_enumerating_available_readers
+	public class When_enumerating_available_readers_in_system_scope
 	{
 		[Test]
 		public void at_least_one_reader_should_be_listed()
 		{
-			var readers = SmartCardReader.GetReaders();
-			Assert.Greater(0, readers.Count());
+			var readers = SmartCardReader.GetReaders(ContextScope.System);
+			Assert.Greater(readers.Count(), 0);
 		}
 	}
 }

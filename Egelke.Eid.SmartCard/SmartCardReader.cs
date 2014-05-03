@@ -8,9 +8,11 @@ namespace Egelke.Eid.SmartCard
 	{
 		private SafeCardContextHandle contextHandle;
 		private SafeCardHandle cardHandle;
+		private readonly ContextScope contextScope;
 
-		private SmartCardReader(string name)
+		private SmartCardReader(string name, ContextScope contextScope)
 		{
+			this.contextScope = contextScope;
 			Name = name;
 		}
 
@@ -24,7 +26,7 @@ namespace Egelke.Eid.SmartCard
 		{
 			if (Connected) return false;
 
-			contextHandle = GetContext();
+			contextHandle = GetContext(contextScope);
 			CardProtocols protocol;
 			SmartCardException.CheckReturnCode(NativeMethods.SCardConnect(contextHandle, Name, CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0, out cardHandle, out protocol));
 			return true;

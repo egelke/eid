@@ -10,7 +10,7 @@ namespace Egelke.Eid.Client.Test.WithoutReader
 		public void a_null_reference_should_be_returned()
 		{
 			var reader = SmartCardReader.GetReader(TestContext.READER_NAME);
-			Assert.IsNull(reader);
+			Assert.Null(reader);
 		}
 	}
 }

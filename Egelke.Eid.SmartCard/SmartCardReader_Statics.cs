@@ -12,13 +12,11 @@ namespace Egelke.Eid.SmartCard
 		/// <summary>
 		/// Enumerates all smart card readers on the current system.
 		/// </summary>
-		public static IEnumerable<SmartCardReader> GetReaders()
+		public static IEnumerable<SmartCardReader> GetReaders(ContextScope scope = ContextScope.User)
 		{
-			using (var context = GetContext())
-				return GetReaders(context);
+			using (var context = GetContext(scope))
+				return GetReaders(context, scope).ToArray(); // avoid multiple enumerations in client code
 		}
-
-
 
 		/// <summary>
 		/// Gets the reader with the specified name or null if the reader is not available.
@@ -38,14 +36,14 @@ namespace Egelke.Eid.SmartCard
 			throw new NotImplementedException();
 		}
 
-		private static SafeCardContextHandle GetContext()
+		private static SafeCardContextHandle GetContext(ContextScope scope)
 		{
 			SafeCardContextHandle context;
-			SmartCardException.CheckReturnCode(NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_SYSTEM, IntPtr.Zero, IntPtr.Zero, out context));
+			SmartCardException.CheckReturnCode(NativeMethods.SCardEstablishContext(scope, IntPtr.Zero, IntPtr.Zero, out context));
 			return context;
 		}
 
-		private static IEnumerable<SmartCardReader> GetReaders(SafeCardContextHandle context)
+		private static IEnumerable<SmartCardReader> GetReaders(SafeCardContextHandle context, ContextScope scope)
 		{
 			var bufferSize = 0;
 
@@ -59,7 +57,7 @@ namespace Egelke.Eid.SmartCard
 			if (returnCode == (int)SmartCardErrors.SCARD_E_NO_READERS_AVAILABLE) return Enumerable.Empty<SmartCardReader>();
 			SmartCardException.CheckReturnCode(returnCode);
 
-			return ParseNames(buffer).Select(name => new SmartCardReader(name));
+			return ParseNames(buffer).Select(name => new SmartCardReader(name, scope));
 		}
 
 		private static IEnumerable<String> ParseNames(char[] multiStr)
