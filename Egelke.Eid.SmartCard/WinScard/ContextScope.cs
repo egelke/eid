@@ -20,8 +20,8 @@ namespace Egelke.Eid.SmartCard.WinScard
 {
 	public enum ContextScope
 	{
-        SCARD_SCOPE_USER = 0, //Not for CE
-        SCARD_SCOPE_TERMINAL = 1, //Not defined in doc
-        SCARD_SCOPE_SYSTEM = 2
+        User = 0, //Not for CE
+        Terminal = 1, //Not defined in doc
+        System = 2
     }
 }

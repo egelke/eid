@@ -23,11 +23,11 @@ namespace Egelke.Eid.Client
                     context = new SafeCardContextHandle(IntPtr.Zero);
                     break;
                 case ReaderScope.System:
-                    retVal = NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_SYSTEM, IntPtr.Zero, IntPtr.Zero, out context);
+                    retVal = NativeMethods.SCardEstablishContext(ContextScope.System, IntPtr.Zero, IntPtr.Zero, out context);
                     if (retVal != 0) throw new InvalidOperationException("Failed to create static context for reader: 0x" + retVal.ToString("X"));
                     break;
                 case ReaderScope.User:
-                    retVal = NativeMethods.SCardEstablishContext(ContextScope.SCARD_SCOPE_USER, IntPtr.Zero, IntPtr.Zero, out context);
+                    retVal = NativeMethods.SCardEstablishContext(ContextScope.User, IntPtr.Zero, IntPtr.Zero, out context);
                     if (retVal != 0) throw new InvalidOperationException("Failed to create static context for reader: 0x" + retVal.ToString("X"));
                     break;
             }
