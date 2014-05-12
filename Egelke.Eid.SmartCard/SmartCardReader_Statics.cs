@@ -35,29 +35,22 @@ namespace Egelke.Eid.SmartCard
 		{
 			var stopwatch = Stopwatch.StartNew();
 
-			try
+			using (var context = GetContext(scope))
 			{
-				using (var context = GetContext(scope))
+				var readerStates = GetReaderNames(context, scope).Select(name => new SCARD_READERSTATE { szReader = name }).ToArray();
+
+				do
 				{
-					var readerStates = GetReaderNames(context, scope).Select(name => new SCARD_READERSTATE { szReader = name }).ToArray();
+					var remainingTimeout = timeout - stopwatch.Elapsed;
 
-					do
-					{
-						var remainingTimeout = timeout - stopwatch.Elapsed;
+					GetReaderStateChanges(context, readerStates, remainingTimeout < TimeSpan.Zero ? TimeSpan.Zero : remainingTimeout);
 
-						GetReaderStateChanges(context, readerStates, remainingTimeout < TimeSpan.Zero ? TimeSpan.Zero : remainingTimeout);
+					if (readerStates.Any(s => atrName.Matches(s.rgbAtr, s.cbAtr)))
+						return new SmartCardReader(readerStates.FirstOrDefault(s => atrName.Matches(s.rgbAtr, s.cbAtr)).szReader, scope);
 
-						if (readerStates.Any(s => atrName.Matches(s.rgbAtr, s.cbAtr)))
-							return new SmartCardReader(readerStates.FirstOrDefault(s => atrName.Matches(s.rgbAtr, s.cbAtr)).szReader, scope);
+				} while (stopwatch.Elapsed < timeout);
 
-					} while (stopwatch.Elapsed < timeout);
-
-					return null;
-				}
-			}
-			finally
-			{
-				stopwatch.Stop();
+				return null;
 			}
 		}
 

@@ -21,11 +21,12 @@ namespace Egelke.Eid.Client.Test.WithCard
 		public void the_timeout_should_not_be_elapsed()
 		{
 			var sw = Stopwatch.StartNew();
-			var timeout = TimeSpan.FromSeconds(200);
+			var timeout = TimeSpan.FromSeconds(1);
 
 			var reader = SmartCardReader.GetReaderWithCard(AtrName.BelgianEid, timeout);
 			sw.Stop();
 
+			Assert.IsNotNull(reader);
 			Assert.Less(sw.Elapsed, timeout);
 		}
 	}
