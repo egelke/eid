@@ -23,10 +23,12 @@ namespace Egelke.Eid.SmartCard
 
 		public string Name { get; private set; }
 
+		public bool Connected { get { return contextHandle != null; } }
+		
 		/// <summary>
 		/// Establishes a connection to the device.
 		/// </summary>
-		/// <returns>true indicates the connection was established. fase indicates the connection was already established earlier.</returns>
+		/// <returns>true indicates the connection was established. false indicates the connection was already established before.</returns>
 		public bool Connect(bool shared = false)
 		{
 			if (Connected) return false;
@@ -48,7 +50,16 @@ namespace Egelke.Eid.SmartCard
 			Dispose(true);
 		}
 
-		public bool Connected { get { return contextHandle != null; } }
+		public IDisposable BeginTransaction()
+		{
+			SmartCardException.CheckReturnCode(NativeMethods.SCardBeginTransaction(cardHandle));
+			return new Transaction(this);
+		}
+
+		public void EndTransaction()
+		{
+			SmartCardException.CheckReturnCode(NativeMethods.SCardEndTransaction(cardHandle, CardDisposition.SCARD_LEAVE_CARD));
+		}
 
 		public CardState GetCardState()
 		{
