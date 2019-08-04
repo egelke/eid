@@ -11,6 +11,12 @@ namespace Egelke.Eid.Client
 
         private bool run;
 
+#if NET20
+       private System.Threading.Thread bgt;
+#else
+        private System.Threading.Tasks.Task bgt;
+#endif
+
         public List<String> List { get; private set; }
 
         public Readers(ReaderScope scope)
@@ -50,17 +56,28 @@ namespace Egelke.Eid.Client
 
                 List = MultiString.ToStringList(readers);
             }
+        }
 
-            //check for status updates
+        public void StartListen()
+        {
+            run = true;
 #if NET20
-            var bgt = new System.Threading.Thread(DetectChanges);
+            bgt = new System.Threading.Thread(DetectChanges);
             bgt.Start();
 #else
-            var bgt = System.Threading.Tasks.Task.Factory.StartNew(DetectChanges);
+            bgt = System.Threading.Tasks.Task.Factory.StartNew(DetectChanges, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 #endif
         }
 
-
+        public void StopListen()
+        {
+            run = false;
+#if NET20
+            bgt.Join();
+#else
+            bgt.Wait();
+#endif
+        }
 
         ~Readers()
         {
