@@ -19,17 +19,29 @@ namespace Egelke.Eid.Client.Test
     [TestClass]
     public class EidWrapperTest
     {
+        EventWaitHandle waitHandle = new AutoResetEvent(false);
+
         [TestMethod]
         [Timeout(60000)]
         public void WaitInScope()
         {
             using (Readers listen = new Readers(ReaderScope.User))
             {
-                EventWaitHandle waitHandle = new AutoResetEvent(false);
                 listen.CardInsert += (s, args) =>
                 {
-                    Assert.IsNotNull(args.Card);
-                    waitHandle.Set();
+                    Card target = args.Card;
+                    EidCard eidTarget = target as EidCard;
+                    Assert.IsNotNull(target);
+                    using (target)
+                    {
+                        target.Open();
+                        if (eidTarget != null)
+                        {
+                            X509Certificate2 root = eidTarget.RootCert;
+                            Assert.AreEqual(root.Issuer, root.Subject);
+                            waitHandle.Set();
+                        }
+                    }
                 };
                 waitHandle.WaitOne();
             }
@@ -43,13 +55,24 @@ namespace Egelke.Eid.Client.Test
         {
             using (Readers readers = new Readers(ReaderScope.System))
             {
+                readers.CardInsert += (s, e) => TestProps(e.Card as EidCard);
+                EidCard target = readers.ListCards(EidCard.KNOWN_NAMES).AsQueryable().FirstOrDefault() as EidCard;
+                if (target != null)
+                {
+                    TestProps(target);
+                }
+                waitHandle.WaitOne();
+            }
+        }
 
-                EidCard target = (EidCard) readers.ListCards(EidCard.KNOWN_NAMES).AsQueryable().FirstOrDefault();
+        private void TestProps(EidCard target)
+        {
+            try
+            {
                 Assert.IsNotNull(target);
-                target.Open();
                 using (target)
                 {
-                    
+                    target.Open();
                     X509Certificate2 auth = target.AuthCert;
                     X509Certificate2 sign = target.SignCert;
                     X509Certificate2 ca = target.CaCert;
@@ -66,6 +89,10 @@ namespace Egelke.Eid.Client.Test
                     Assert.AreEqual(new Size(140, 200), pic.Size);
                 }
             }
+            finally
+            {
+                waitHandle.Set();
+            }
         }
 
         [TestMethod]
@@ -73,13 +100,27 @@ namespace Egelke.Eid.Client.Test
         {
             using (Readers readers = new Readers(ReaderScope.System))
             {
-                EidCard target = (EidCard)readers.ListCards(EidCard.KNOWN_NAMES).AsQueryable().FirstOrDefault();
+                readers.CardInsert += (s, e) => TestProps(e.Card as EidCard);
+                EidCard target = readers.ListCards(EidCard.KNOWN_NAMES).AsQueryable().FirstOrDefault() as EidCard;
+                if (target != null)
+                {
+                    TestFiles(target);
+                }
+                waitHandle.WaitOne();
+            }
+        }
+
+        private void TestFiles(EidCard target)
+        {
+            try
+            {
                 Assert.IsNotNull(target);
-                target.Open();
+
                 using (target)
                 {
+                    target.Open();
                     int i = 0;
-                    foreach(EidFile fileId in Enum.GetValues(typeof(EidFile)))
+                    foreach (EidFile fileId in Enum.GetValues(typeof(EidFile)))
                     {
                         i++;
                         byte[] fileData = target.ReadRaw(fileId);
@@ -87,6 +128,10 @@ namespace Egelke.Eid.Client.Test
                     }
                     Assert.AreEqual(10, i);
                 }
+            }
+            finally
+            {
+                waitHandle.Set();
             }
         }
 
