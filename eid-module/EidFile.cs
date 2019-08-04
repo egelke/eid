@@ -1,6 +1,6 @@
 ﻿/*
  *  This file is part of .Net eID Client.
- *  Copyright (C) 2014 Egelke BVBA
+ *  Copyright (C) 2014-2019 Egelke BVBA
  *
  *  .Net eID Client is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -18,20 +18,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Egelke.Eid.Client
 {
-    public enum CertificateId
+    public enum EidFile
     {
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x38 })]
-        Authentication,
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x39 })]
-        Signature,
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x3A })]
-        CA,
-        [FileSelectCmd(new byte[] { 0x00, 0xA4, 0x08, 0x0C, 0x06, 0x3F, 0x00, 0xDF, 0x00, 0x50, 0x3B })]
-        Root
+        AuthCert,
+        SignCert    ,
+        CaCert      ,
+        RootCert    ,
+        RrnCert     ,
+
+        Id          ,
+        IdSig       ,
+        Address     ,
+        AddressSig  ,
+        Picture     ,
     }
 }

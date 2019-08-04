@@ -1,6 +1,6 @@
 ﻿/*
  *  This file is part of .Net eID Client.
- *  Copyright (C) 2014 Egelke BVBA
+ *  Copyright (C) 2014-2019 Egelke BVBA
  *
  *  .Net eID Client is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -18,23 +18,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Win32.SafeHandles;
 
 namespace Egelke.Eid.Client
 {
-    internal class CardSafeHandler : SafeHandleZeroOrMinusOneIsInvalid
+    internal class CardSafeHandler : SafeHandle
     {
 
         private CardSafeHandler()
-            : base(true)
+            : base(IntPtr.Zero, true)
         {
 
         }
 
         public CardSafeHandler(IntPtr preexistinghandle)
-            : base(true)
+            : base(IntPtr.Zero, true)
         {
             handle = preexistinghandle;
         }
@@ -43,5 +42,7 @@ namespace Egelke.Eid.Client
         {
             return NativeMethods.SCardDisconnect(handle, CardDisposition.SCARD_LEAVE_CARD) == 0;
         }
+
+        public override bool IsInvalid => handle == IntPtr.Zero || handle == new IntPtr(-1);
     }
 }

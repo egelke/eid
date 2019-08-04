@@ -1,6 +1,6 @@
 ﻿/*
  *  This file is part of .Net eID Client.
- *  Copyright (C) 2014 Egelke BVBA
+ *  Copyright (C) 2014-2019 Egelke BVBA
  *
  *  .Net eID Client is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
@@ -30,13 +29,27 @@ namespace Egelke.Eid.Client
         internal static readonly SCARD_IO_REQUEST T0 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T0);
         internal static readonly SCARD_IO_REQUEST T1 = new SCARD_IO_REQUEST(CardPCI.SCARD_PCI_T1);
 
-        private uint dwProtocol;
-        private int cbPciLength;
+        private readonly uint dwProtocol;
+        private readonly int cbPciLength;
 
         private SCARD_IO_REQUEST(CardPCI protocol)
         {
             this.dwProtocol = (uint) protocol;
+#if NET20 || NET40
             this.cbPciLength = Marshal.SizeOf(typeof(SCARD_IO_REQUEST));
+#else 
+            this.cbPciLength = Marshal.SizeOf<SCARD_IO_REQUEST>();
+#endif
+        }
+
+        internal SCARD_IO_REQUEST(CardProtocols protocol)
+        {
+            this.dwProtocol = (uint)protocol;
+#if NET20 || NET40
+            this.cbPciLength = Marshal.SizeOf(typeof(SCARD_IO_REQUEST));
+#else 
+            this.cbPciLength = Marshal.SizeOf<SCARD_IO_REQUEST>();
+#endif
         }
     }
 }

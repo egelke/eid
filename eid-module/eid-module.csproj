@@ -1,96 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{398E1A45-BA82-453F-A169-AA87D78C6B1D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net40;net20</TargetFrameworks>
     <RootNamespace>Egelke.Eid.Client</RootNamespace>
-    <AssemblyName>Egelke.Eid.Client</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\release.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyName>Egelke.Eid.Client</AssemblyName>
+    <Version>0.2.0</Version>
+    <Authors>Egelke BVBA</Authors>
+    <Company>Egelke BVBA</Company>
+    <Description>.net client for the Belgium eID Smart Cards.
+Complements the reading of the files (certs, TLV and signatures).</Description>
+    <PackageReleaseNotes>Rework interface
+Support read of raw files
+Multi target</PackageReleaseNotes>
+    <Copyright>Copyright © Egelke BVBA 2014-2019</Copyright>
+	  <LicenseUrl>http://www.gnu.org/licenses/lgpl.html</LicenseUrl>
+    <PackageProjectUrl>https://github.com/egelke/eid</PackageProjectUrl>
+    <PackageIconUrl>https://egelke.be/wp-content/uploads/311071.png</PackageIconUrl>
+    <PackageTags>eID Belgium</PackageTags>
   </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Address.cs" />
-    <Compile Include="Readers.cs" />
-    <Compile Include="Helper\ExtensionMethods.cs" />
-    <Compile Include="ReaderScope.cs" />
-    <Compile Include="SCard\CardAttrId.cs" />
-    <Compile Include="SCard\CardContextSafeHandler.cs" />
-    <Compile Include="SCard\CardDisposition.cs" />
-    <Compile Include="SCard\CardPCI.cs" />
-    <Compile Include="SCard\CardProtocols.cs" />
-    <Compile Include="SCard\CardSafeHandler.cs" />
-    <Compile Include="SCard\CardShareMode.cs" />
-    <Compile Include="CertificateId.cs" />
-    <Compile Include="SCard\ContextScope.cs" />
-    <Compile Include="EidCard.cs" />
-    <Compile Include="Attribute\FileSelectCmdAttribute.cs" />
-    <Compile Include="SCard\NativeMethods.cs" />
-    <Compile Include="Exception\NoCardException.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Exception\ReaderException.cs" />
-    <Compile Include="SCard\ReaderState.cs" />
-    <Compile Include="SCard\SCARD_IO_REQUEST.cs" />
-    <Compile Include="SCard\SCARD_READERSTATE.cs" />
-    <Compile Include="Exception\UnsupportedCardException.cs" />
+    <Folder Include="Exception\" />
+    <Folder Include="Properties\" />
+    <Folder Include="SCard\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="COPYING" />
-    <None Include="eid-module.nuspec" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>SET nuget="$(SolutionDir)packages\NuGet.CommandLine.2.8.1\tools\nuget.exe"
-%25nuget%25 pack "$(ProjectPath)" -IncludeReferencedProjects -Prop Configuration=$(ConfigurationName)
-%25nuget%25 pack "$(ProjectPath)"  -Symbols</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
