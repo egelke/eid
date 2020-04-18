@@ -35,6 +35,7 @@ namespace Egelke.Eid.Client
         SCARD_STATE_ATRMATCH    = 0x0040,
         SCARD_STATE_EXCLUSIVE   = 0x0080,
         SCARD_STATE_INUSE       = 0x0100,
-        SCARD_STATE_MUTE        = 0x0200
+        SCARD_STATE_MUTE        = 0x0200,
+        SCARD_STATE_0400        = 0x0400,
     }
 }

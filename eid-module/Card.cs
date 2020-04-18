@@ -31,12 +31,7 @@ namespace Egelke.Eid.Client
 
         public String ReaderName { get; private set; }
 
-        public void Open()
-        {
-            Open(false);
-        }
-
-        public void Open(Boolean exclusive)
+        public void Open(Boolean exclusive = false)
         {
             uint retVal = NativeMethods.SCardConnect(context, ReaderName, exclusive ? CardShareMode.SCARD_SHARE_EXCLUSIVE : CardShareMode.SCARD_SHARE_SHARED, CardProtocols.SCARD_PROTOCOL_T0 | CardProtocols.SCARD_PROTOCOL_T1, out handler, out protocol);
             if (retVal == 0x80100069L) throw new NoCardException("Not card was found in the reader");
@@ -47,14 +42,20 @@ namespace Egelke.Eid.Client
 
         public byte[] ReadBinary(byte[] file)
         {
-
             uint retVal;
+            uint attempts;
             SCARD_IO_REQUEST ioReq = new SCARD_IO_REQUEST(protocol);
 
-            retVal = NativeMethods.SCardBeginTransaction(handler);
-            if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
-            if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
+            attempts = 0;
+            do
+            {
+                retVal = NativeMethods.SCardBeginTransaction(handler);
+                if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
+                if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
+                if (retVal == 0x80100068 || retVal == 0x8010002F) attempts++; //former is reset (which is fine, we are only starting), the latter is "comm error, retry".
+            } while (attempts > 0 && attempts < 5);
             if (retVal != 0) throw new InvalidOperationException("Failed to start transaction: 0x" + retVal.ToString("X"));
+            
             try
             {
                 byte[] cmd;
@@ -65,9 +66,14 @@ namespace Egelke.Eid.Client
                 Array.Copy(CMD_SELECT_FILE, cmd, CMD_SELECT_FILE.Length);
                 cmd[4] = (byte) file.Length;
                 Array.Copy(file, 0, cmd, CMD_SELECT_FILE.Length, file.Length);
-                retVal = NativeMethods.SCardTransmit(handler, ioReq, cmd, cmd.Length, null, rsp, ref rspLen);
-                if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
-                if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
+                attempts = 0;
+                do
+                {
+                    retVal = NativeMethods.SCardTransmit(handler, ioReq, cmd, cmd.Length, null, rsp, ref rspLen);
+                    if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
+                    if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
+                    if (retVal == 0x8010002F) attempts++; //"comm error, retry".
+                } while (attempts > 0 && attempts < 5);
                 if (retVal != 0) throw new InvalidOperationException("Failed to select file: 0x" + retVal.ToString("X"));
                 if (rspLen < 0)
                 {
@@ -88,9 +94,15 @@ namespace Egelke.Eid.Client
                     cmd[3] = (byte)(offset & 0xFF);
 
                     rspLen = rsp.Length;
-                    retVal = NativeMethods.SCardTransmit(handler, ioReq, cmd, cmd.Length, null, rsp, ref rspLen);
-                    if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
-                    if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
+                    retVal = 0x8010002F;//retry
+                    attempts = 0;
+                    do
+                    {
+                        retVal = NativeMethods.SCardTransmit(handler, ioReq, cmd, cmd.Length, null, rsp, ref rspLen);
+                        if (retVal == 0x80100017) throw new ReaderException("The card reader isn't available any more");
+                        if (retVal == 0x80100069) throw new NoCardException("The card has been removed");
+                        if (retVal == 0x8010002F) attempts++; //"comm error, retry".
+                    } while (attempts > 0 && attempts < 5);
                     if (retVal != 0) throw new InvalidOperationException("Failed to read bytes: " + retVal.ToString("X"));
                     if (rspLen < 0)
                     {

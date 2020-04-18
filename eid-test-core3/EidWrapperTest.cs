@@ -21,21 +21,14 @@ namespace Egelke.Eid.Client.Test
     {
         private static Readers readers;
 
-        private static Card card;
+        //private static Card card;
 
-        private static EventWaitHandle newCard = new AutoResetEvent(false);
+        //private static EventWaitHandle newCard = new AutoResetEvent(false);
 
         [ClassInitialize]
         public static void Setup(TestContext ctx)
         {
             readers = new Readers(ReaderScope.User);
-            card = readers.ListCards(EidCard.KNOWN_NAMES).AsQueryable().FirstOrDefault();
-            readers.CardInsert += (s, e) =>
-            {
-                card = e.Card;
-                newCard.Set();
-            };
-            readers.StartListen();
         }
 
         public static void Cleanup()
@@ -48,6 +41,17 @@ namespace Egelke.Eid.Client.Test
         [Timeout(60000)]
         public void AAA_WaitForEid()
         {
+            var newCard = new AutoResetEvent(false);
+            Card card = readers.ListCards().Where(c => c is EidCard).FirstOrDefault();
+            readers.CardInsert += (s, e) =>
+            {
+                if (e.Card is EidCard) {
+                    card = e.Card;
+                    newCard.Set();
+                }
+            };
+            readers.StartListen();
+
             if (card == null)
             {
                 newCard.WaitOne();
@@ -55,13 +59,14 @@ namespace Egelke.Eid.Client.Test
             Assert.AreEqual(typeof(EidCard), card.GetType());
         }
 
+
         /// <summary>
         ///A test for ReadCertificate
         ///</summary>
         [TestMethod]
         public void ReadProperties()
         {
-            EidCard target = (EidCard)card;
+            EidCard target = (EidCard)readers.ListCards().Where(c => c is EidCard).FirstOrDefault();
             using (target)
             {
                 target.Open();
@@ -86,7 +91,7 @@ namespace Egelke.Eid.Client.Test
         [TestMethod]
         public void ReadAllFiles()
         {
-            EidCard target = (EidCard)card;
+            EidCard target = (EidCard)readers.ListCards().Where(c => c is EidCard).FirstOrDefault();
             using (target)
             {
                 target.Open();

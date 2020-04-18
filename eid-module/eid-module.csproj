@@ -12,19 +12,23 @@
     <Company>Egelke BVBA</Company>
     <Description>.net client for the Belgium eID Smart Cards.
 Complements the reading of the files (certs, TLV and signatures).</Description>
-    <PackageReleaseNotes>Standarised target framework (.Net standard 2.0 and .Net framework 4.5.2)</PackageReleaseNotes>
+    <PackageReleaseNotes>Standarised target framework (.Net standard 2.0 and .Net framework 4.5.2).
+Got rid of the card list methods, who wheren't functioning properly.
+Test (and fixed) on remote desktop and some more readers
+Extended the listener to handle reader removal/insertion</PackageReleaseNotes>
     <Copyright>Copyright © Egelke BVBA 2014-2020</Copyright>
 	  <LicenseUrl>http://www.gnu.org/licenses/lgpl.html</LicenseUrl>
     <PackageProjectUrl>https://github.com/egelke/eid</PackageProjectUrl>
-    <PackageIconUrl>https://egelke.be/wp-content/uploads/311071.png</PackageIconUrl>
     <PackageTags>eID Belgium</PackageTags>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Properties\**" />
-    <EmbeddedResource Remove="Properties\**" />
-    <None Remove="Properties\**" />
+    <None Include="icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -38,6 +42,7 @@ Complements the reading of the files (certs, TLV and signatures).</Description>
   <ItemGroup>
     <Folder Include="Exception\" />
     <Folder Include="SCard\" />
+    <Folder Include="Exception\" />
   </ItemGroup>
 
 </Project>

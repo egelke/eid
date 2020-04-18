@@ -28,7 +28,10 @@ namespace Egelke.Eid.Client
 {
     public class EidCard : Card
     {
-        public static readonly string[] KNOWN_NAMES = { "Beid" };
+        private static readonly byte[] ATR_VAL = { 0x3b, 0x98, 0x00, 0x40, 0x00, 0xa5, 0x03, 0x01, 0x01, 0x01, 0xad, 0x13, 0x00 };
+        private static readonly byte[] ATR_MASK = { 0xff, 0xff, 0x00, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00 };
+        private static readonly byte[] ATR18_VAL = { 0x3b, 0x7f, 0x96, 0x00, 0x00, 0x80, 0x31, 0x80, 0x65, 0xb0, 0x85, 0x04, 0x01, 0x20, 0x12, 0x0f, 0xff, 0x82, 0x90, 0x00 };
+        private static readonly byte[] ATR18_MASK = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
         private static readonly Dictionary<EidFile, byte[]> fileSelectors = new Dictionary<EidFile, byte[]>();
 
@@ -46,12 +49,21 @@ namespace Egelke.Eid.Client
             fileSelectors.Add(EidFile.Picture, new byte[] { 0x3F, 0x00, 0xDF, 0x01, 0x40, 0x35 });
         }
 
-        public static bool IsEid(List<String> names)
+        public static bool IsEid(byte[] atr)
         {
-            foreach (String name in KNOWN_NAMES)
-            {
-                if (names.Contains(name)) return true;
+            if (atr.Length == ATR_VAL.Length) {
+                int i = 0;
+                while (i < atr.Length && (atr[i] & ATR_MASK[i]) == ATR_VAL[i]) { i++; }
+                if (i == atr.Length) return true;
             }
+            
+            if (atr.Length == ATR18_VAL.Length)
+            {
+                int i = 0;
+                while (i < atr.Length && (atr[i] & ATR18_MASK[i]) == ATR18_VAL[i]) { i++; }
+                if (i == atr.Length) return true;
+            }
+
             return false;
         }
 
