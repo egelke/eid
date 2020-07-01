@@ -28,9 +28,9 @@ namespace Egelke.Eid.Client.Model
         {
             IDictionary<byte, byte[]> d = file.Parse();
 
-            StreetAndNumber = d[0x01].ToString();
-            Zip = d[0x02].ToString();
-            Municipality = d[0x03].ToString();
+            StreetAndNumber = d[0x01].ToStr();
+            Zip = d[0x02].ToStr();
+            Municipality = d[0x03].ToStr();
         }
 
         public String StreetAndNumber { get; }

@@ -77,6 +77,7 @@ namespace Egelke.Eid.Client.Test
                 X509Certificate2 rrn = target.RrnCert;
                 Image pic = Image.FromStream(new MemoryStream(target.Picture));
                 Model.Address address = target.Address;
+                Model.Identity identity = target.Identity;
 
                 Assert.AreNotEqual(auth.Subject, sign.Subject);
                 Assert.AreEqual(sign.Issuer, ca.Subject);
@@ -88,6 +89,24 @@ namespace Egelke.Eid.Client.Test
                 Assert.IsTrue(address.StreetAndNumber.Length > 0);
                 Assert.IsTrue(address.Zip.Length >= 4);
                 Assert.IsTrue(address.Municipality.Length > 0);
+
+                Assert.IsTrue(identity.CardNr.Length == 12);
+                Assert.IsTrue(identity.ChipNr.Length > 10);
+                Assert.IsTrue(identity.ValidityBeginDate > DateTime.Now.AddYears(-10));
+                Assert.IsTrue(identity.ValidityEndDate < DateTime.Now.AddYears(10));
+                Assert.IsTrue(identity.IssuingMunicipality.Length > 0);
+                Assert.IsTrue(identity.NationalNr.Length == 11);
+                Assert.IsTrue(auth.Subject.Contains(identity.Surname));
+                Assert.IsTrue(auth.Subject.Contains(identity.FirstNames));
+                Assert.IsTrue(identity.FirstLetterOfThirdGivenName.Length == 1);
+                Assert.IsTrue(identity.Nationality.Length > 0);
+                Assert.IsTrue(identity.Nationality.Length > 0);
+                Assert.IsTrue(identity.LocationOfBirth.Length > 0);
+                Assert.IsTrue(identity.DateOfBirth < DateTime.Now);
+                Assert.IsNotNull(identity.Gender);
+                Assert.IsNotNull(identity.Nobility);
+                Assert.IsNotNull(identity.DocumentType);
+                Assert.IsNotNull(identity.SpecialStatus);
             }
         }
 

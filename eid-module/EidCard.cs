@@ -90,7 +90,7 @@ namespace Egelke.Eid.Client
 
         public Address Address => new Address(ReadRaw(EidFile.Address));
 
-
+        public Identity Identity => new Identity(ReadRaw(EidFile.Id));
 
     }
 }
