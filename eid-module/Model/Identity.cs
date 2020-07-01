@@ -78,7 +78,7 @@ namespace Egelke.Eid.Client.Model
             IssuingMunicipality = d[0x05].ToStr();
             NationalNr = d[0x06].ToStr();
             Surname = d[0x07].ToStr();
-            FirstNames = d[0x09].ToStr();
+            FirstNames = d[0x08].ToStr();
             FirstLetterOfThirdGivenName = d[0x09].ToStr();
             Nationality = d[0x0A].ToStr();
             LocationOfBirth = d[0x0B].ToStr();

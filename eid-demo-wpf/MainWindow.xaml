@@ -1,0 +1,136 @@
+﻿<Window x:Class="eid_demo_wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:eid_demo_wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="200px"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Image Grid.Column="0">
+            <Image.Source>
+                <Binding Source="{StaticResource card}" Path="Picture" />
+            </Image.Source>
+        </Image>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+
+                <RowDefinition Height="5" />
+
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="Name:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="0" >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.Surname" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="1" Content="Given Names:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="1"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.FirstNames" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="2" Content="Place of birth:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="2"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.LocationOfBirth" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="3" Content="Date of birth:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="3">
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.DateOfBirth" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="4" Content="Sex:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="4" >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.Gender" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="5" Content="National number:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="5"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.NationalNr" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="6" Content="Nationality:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="6"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.Nationality" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="7" Content="Title:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="7"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.Nobility" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="8" Content="Special Status:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="8"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Identity.SpecialStatus" />
+                </Label.Content>
+            </Label>
+
+            <GridSplitter Grid.Row="9" Height="5" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" />
+
+            <Label Grid.Column="0" Grid.Row="10" Content="Street:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="10">
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Address.StreetAndNumber" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="11" Content="Postal Code:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="11"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Address.Zip" />
+                </Label.Content>
+            </Label>
+
+            <Label Grid.Column="0" Grid.Row="12" Content="Municipality:" HorizontalContentAlignment="Right" />
+            <Label Grid.Column="1" Grid.Row="12"  >
+                <Label.Content>
+                    <Binding Source="{StaticResource card}" Path="Address.Municipality" />
+                </Label.Content>
+            </Label>
+
+
+        </Grid>
+        <Button Grid.Column="2" Grid.Row="2" Content="Read Card" HorizontalAlignment="Right" Margin="5" Click="Button_Click" />
+    </Grid>
+</Window>

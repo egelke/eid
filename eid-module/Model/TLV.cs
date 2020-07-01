@@ -41,13 +41,13 @@ namespace Egelke.Eid.Client.Model
         {
             String stringValue = TLV.ToStr(value);
 
-            String[] parts = stringValue.Split('.', ' '); //split on . and ' '
+            String[] parts = stringValue.Split(new char[] { '.', ' '}, StringSplitOptions.RemoveEmptyEntries); //split on . and ' '
             if (parts.Length == 3)
             {
                 return new DateTime(
-                    Int32.Parse(parts[0]),
+                    Int32.Parse(parts[2]),
                     parts[1].ToMonth(),
-                    Int32.Parse(parts[2]));
+                    Int32.Parse(parts[0]));
             }
             else
             {
