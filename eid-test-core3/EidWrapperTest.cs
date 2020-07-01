@@ -76,6 +76,7 @@ namespace Egelke.Eid.Client.Test
                 X509Certificate2 root = target.RootCert;
                 X509Certificate2 rrn = target.RrnCert;
                 Image pic = Image.FromStream(new MemoryStream(target.Picture));
+                Model.Address address = target.Address;
 
                 Assert.AreNotEqual(auth.Subject, sign.Subject);
                 Assert.AreEqual(sign.Issuer, ca.Subject);
@@ -84,6 +85,9 @@ namespace Egelke.Eid.Client.Test
                 Assert.AreEqual(root.Issuer, root.Subject);
                 Assert.AreEqual(rrn.Issuer, root.Subject);
                 Assert.AreEqual(new Size(140, 200), pic.Size);
+                Assert.IsTrue(address.StreetAndNumber.Length > 0);
+                Assert.IsTrue(address.Zip.Length >= 4);
+                Assert.IsTrue(address.Municipality.Length > 0);
             }
         }
 

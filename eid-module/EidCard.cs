@@ -23,6 +23,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
+using Egelke.Eid.Client.Model;
 
 namespace Egelke.Eid.Client
 {
@@ -73,59 +74,23 @@ namespace Egelke.Eid.Client
             
         }
 
-        public byte[] ReadRaw(EidFile file)
-        {
-            return ReadBinary(fileSelectors[file]);
-        }
+        public byte[] ReadRaw(EidFile file) => ReadBinary(fileSelectors[file]);
 
-        public X509Certificate2 AuthCert
-        {
-            get
-            {
-                return new X509Certificate2(ReadRaw(EidFile.AuthCert));
-            }
-        }
+        public X509Certificate2 AuthCert => new X509Certificate2(ReadRaw(EidFile.AuthCert));
 
-        public X509Certificate2 SignCert
-        {
-            get
-            {
-                return new X509Certificate2(ReadRaw(EidFile.SignCert));
-            }
-        }
+        public X509Certificate2 SignCert => new X509Certificate2(ReadRaw(EidFile.SignCert));
 
-        public X509Certificate2 CaCert
-        {
-            get
-            {
-                return new X509Certificate2(ReadRaw(EidFile.CaCert));
-            }
-        }
+        public X509Certificate2 CaCert => new X509Certificate2(ReadRaw(EidFile.CaCert));
 
-        public X509Certificate2 RootCert
-        {
-            get
-            {
-                return new X509Certificate2(ReadRaw(EidFile.RootCert));
-            }
-        }
+        public X509Certificate2 RootCert => new X509Certificate2(ReadRaw(EidFile.RootCert));
 
-        public X509Certificate2 RrnCert
-        {
-            get
-            {
-                return new X509Certificate2(ReadRaw(EidFile.RrnCert));
-            }
-        }
+        public X509Certificate2 RrnCert => new X509Certificate2(ReadRaw(EidFile.RrnCert));
 
-        public byte[] Picture
-        {
-            get
-            {
-                return ReadRaw(EidFile.Picture);
-            }
-        }
+        public byte[] Picture => ReadRaw(EidFile.Picture);
 
-       
+        public Address Address => new Address(ReadRaw(EidFile.Address));
+
+
+
     }
 }

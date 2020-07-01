@@ -20,16 +20,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Egelke.Eid.Client
+namespace Egelke.Eid.Client.Model
 {
     public class Address
     {
-        
-        public String StreetAndNumber { get; internal set; }
+        public Address(byte[] file)
+        {
+            IDictionary<byte, byte[]> d = file.Parse();
 
-        public String Zip { get; internal set; }
+            StreetAndNumber = d[0x01].ToString();
+            Zip = d[0x02].ToString();
+            Municipality = d[0x03].ToString();
+        }
 
-        public String Municipality { get; internal set; }
+        public String StreetAndNumber { get; }
+
+        public String Zip { get; }
+
+        public String Municipality { get; }
+
 
     }
 }
