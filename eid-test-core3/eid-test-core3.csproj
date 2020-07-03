@@ -21,4 +21,10 @@
     <ProjectReference Include="..\eid-module\eid-module.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="592564365582.eid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

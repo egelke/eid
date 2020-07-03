@@ -7,6 +7,8 @@ using System.Threading;
 using System.Drawing;
 using System.Linq;
 using System.IO;
+using System.Xml;
+using System.Globalization;
 
 namespace Egelke.Eid.Client.Test
 {
@@ -66,48 +68,68 @@ namespace Egelke.Eid.Client.Test
         [TestMethod]
         public void ReadProperties()
         {
+            //prep
             EidCard target = (EidCard)readers.ListCards().Where(c => c is EidCard).FirstOrDefault();
+
+            //exec
+            X509Certificate2 auth;
+            X509Certificate2 sign;
+            X509Certificate2 ca;
+            X509Certificate2 root;
+            X509Certificate2 rrn;
+            Image pic;
+            Model.Address address;
+            Model.Identity identity;
             using (target)
             {
                 target.Open();
-                X509Certificate2 auth = target.AuthCert;
-                X509Certificate2 sign = target.SignCert;
-                X509Certificate2 ca = target.CaCert;
-                X509Certificate2 root = target.RootCert;
-                X509Certificate2 rrn = target.RrnCert;
-                Image pic = Image.FromStream(new MemoryStream(target.Picture));
-                Model.Address address = target.Address;
-                Model.Identity identity = target.Identity;
-
-                Assert.AreNotEqual(auth.Subject, sign.Subject);
-                Assert.AreEqual(sign.Issuer, ca.Subject);
-                Assert.AreEqual(auth.Issuer, ca.Subject);
-                Assert.AreEqual(ca.Issuer, root.Subject);
-                Assert.AreEqual(root.Issuer, root.Subject);
-                Assert.AreEqual(rrn.Issuer, root.Subject);
-                Assert.AreEqual(new Size(140, 200), pic.Size);
-                Assert.IsTrue(address.StreetAndNumber.Length > 0);
-                Assert.IsTrue(address.Zip.Length >= 4);
-                Assert.IsTrue(address.Municipality.Length > 0);
-
-                Assert.IsTrue(identity.CardNr.Length == 12);
-                Assert.IsTrue(identity.ChipNr.Length > 10);
-                Assert.IsTrue(identity.ValidityBeginDate > DateTime.Now.AddYears(-10));
-                Assert.IsTrue(identity.ValidityEndDate < DateTime.Now.AddYears(10));
-                Assert.IsTrue(identity.IssuingMunicipality.Length > 0);
-                Assert.IsTrue(identity.NationalNr.Length == 11);
-                Assert.IsTrue(auth.Subject.Contains(identity.Surname));
-                Assert.IsTrue(auth.Subject.Contains(identity.FirstNames));
-                Assert.IsTrue(identity.FirstLetterOfThirdGivenName.Length == 1);
-                Assert.IsTrue(identity.Nationality.Length > 0);
-                Assert.IsTrue(identity.Nationality.Length > 0);
-                Assert.IsTrue(identity.LocationOfBirth.Length > 0);
-                Assert.IsTrue(identity.DateOfBirth < DateTime.Now);
-                Assert.IsNotNull(identity.Gender);
-                Assert.IsNotNull(identity.Nobility);
-                Assert.IsNotNull(identity.DocumentType);
-                Assert.IsNotNull(identity.SpecialStatus);
+                auth = target.AuthCert;
+                sign = target.SignCert;
+                ca = target.CaCert;
+                root = target.RootCert;
+                rrn = target.RrnCert;
+                pic = Image.FromStream(new MemoryStream(target.Picture));
+                address = target.Address;
+                identity = target.Identity;
             }
+
+            //verify
+            Assert.AreNotEqual(auth.Subject, sign.Subject);
+            Assert.AreEqual(sign.Issuer, ca.Subject);
+            Assert.AreEqual(auth.Issuer, ca.Subject);
+            Assert.AreEqual(ca.Issuer, root.Subject);
+            Assert.AreEqual(root.Issuer, root.Subject);
+            Assert.AreEqual(rrn.Issuer, root.Subject);
+
+            //loads the eID-Viewer export file (put yours in the root if you want to test with your eID)
+            XmlDocument eidExp = new XmlDocument();
+            eidExp.Load(identity.CardNr + ".eid");
+
+            Image refPic = Image.FromStream(new MemoryStream(Convert.FromBase64String(eidExp.SelectSingleNode("/eid/identity/photo").InnerText)));
+            Assert.AreEqual(refPic.Size, pic.Size);
+            
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/address/streetandnumber").InnerText.TrimEnd(), address.StreetAndNumber);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/address/zip").InnerText, address.Zip);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/address/municipality").InnerText, address.Municipality);
+
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/card/@cardnumber").InnerText, identity.CardNr);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/card/@chipnumber").InnerText, BitConverter.ToString(identity.ChipNr).Replace("-", ""));
+            Assert.AreEqual(DateTime.ParseExact(eidExp.SelectSingleNode("/eid/card/@validitydatebegin").InnerText, "yyyyMMdd", CultureInfo.InvariantCulture), identity.ValidityBeginDate);
+            Assert.AreEqual(DateTime.ParseExact(eidExp.SelectSingleNode("/eid/card/@validitydateend").InnerText, "yyyyMMdd", CultureInfo.InvariantCulture), identity.ValidityEndDate);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/card/deliverymunicipality").InnerText, identity.IssuingMunicipality);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/identity/@nationalnumber").InnerText, identity.NationalNr);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/identity/name").InnerText, identity.Surname);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/identity/firstname").InnerText, identity.FirstNames);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/identity/middlenames").InnerText, identity.FirstLetterOfThirdGivenName);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/identity/nationality").InnerText, identity.Nationality);
+            Assert.AreEqual(eidExp.SelectSingleNode("/eid/identity/placeofbirth").InnerText, identity.LocationOfBirth);
+            Assert.AreEqual(DateTime.ParseExact(eidExp.SelectSingleNode("/eid/identity/@dateofbirth").InnerText, "yyyyMMdd", CultureInfo.InvariantCulture), identity.DateOfBirth);
+            
+            //TODO, make a little more resilient
+            Assert.IsNotNull(identity.Gender);
+            Assert.IsNotNull(identity.Nobility);
+            Assert.IsNotNull(identity.DocumentType);
+            Assert.IsNotNull(identity.SpecialStatus);
         }
 
 
