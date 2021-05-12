@@ -1,5 +1,4 @@
 ﻿using Egelke.Eid.Client;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -7,6 +6,9 @@ using System.Threading;
 using System.Drawing;
 using System.Linq;
 using System.IO;
+using Xunit;
+using System.Xml;
+using System.Globalization;
 
 namespace Egelke.Eid.Client.Test
 {
@@ -16,29 +18,17 @@ namespace Egelke.Eid.Client.Test
     ///This is a test class for EidWrapperTest and is intended
     ///to contain all EidWrapperTest Unit Tests
     ///</summary>
-    [TestClass]
-    public class EidWrapperTest
+    public class EidWrapperTest : IClassFixture<ReadersFixture>
     {
-        private static Readers readers;
+        private Readers readers;
 
-        //private static Card card;
-
-        //private static EventWaitHandle newCard = new AutoResetEvent(false);
-
-        [ClassInitialize]
-        public static void Setup(TestContext ctx)
+        public EidWrapperTest(ReadersFixture readersFixture)
         {
-            readers = new Readers(ReaderScope.User);
-        }
-
-        public static void Cleanup()
-        {
-            readers.Dispose();
+            readers = readersFixture.Readers;
         }
 
 
-        [TestMethod]
-        [Timeout(60000)]
+        [Fact(Timeout = 60000)]
         public void AAA_WaitForEid()
         {
             var newCard = new AutoResetEvent(false);
@@ -56,39 +46,82 @@ namespace Egelke.Eid.Client.Test
             {
                 newCard.WaitOne();
             }
-            Assert.AreEqual(typeof(EidCard), card.GetType());
+            Assert.Equal(typeof(EidCard), card.GetType());
         }
 
 
         /// <summary>
         ///A test for ReadCertificate
         ///</summary>
-        [TestMethod]
+        [Fact]
         public void ReadProperties()
         {
+            //prep
             EidCard target = (EidCard)readers.ListCards().Where(c => c is EidCard).FirstOrDefault();
+
+            //exec
+            X509Certificate2 auth;
+            X509Certificate2 sign;
+            X509Certificate2 ca;
+            X509Certificate2 root;
+            X509Certificate2 rrn;
+            Image pic;
+            Model.Address address;
+            Model.Identity identity;
             using (target)
             {
                 target.Open();
-                X509Certificate2 auth = target.AuthCert;
-                X509Certificate2 sign = target.SignCert;
-                X509Certificate2 ca = target.CaCert;
-                X509Certificate2 root = target.RootCert;
-                X509Certificate2 rrn = target.RrnCert;
-                Image pic = Image.FromStream(new MemoryStream(target.Picture));
-
-                Assert.AreNotEqual(auth.Subject, sign.Subject);
-                Assert.AreEqual(sign.Issuer, ca.Subject);
-                Assert.AreEqual(auth.Issuer, ca.Subject);
-                Assert.AreEqual(ca.Issuer, root.Subject);
-                Assert.AreEqual(root.Issuer, root.Subject);
-                Assert.AreEqual(rrn.Issuer, root.Subject);
-                Assert.AreEqual(new Size(140, 200), pic.Size);
+                auth = target.AuthCert;
+                sign = target.SignCert;
+                ca = target.CaCert;
+                root = target.RootCert;
+                rrn = target.RrnCert;
+                pic = Image.FromStream(new MemoryStream(target.Picture));
+                address = target.Address;
+                identity = target.Identity;
             }
+
+            //verify
+            Assert.NotEqual(auth.Subject, sign.Subject);
+            Assert.Equal(sign.Issuer, ca.Subject);
+            Assert.Equal(auth.Issuer, ca.Subject);
+            Assert.Equal(ca.Issuer, root.Subject);
+            Assert.Equal(root.Issuer, root.Subject);
+            Assert.Equal(rrn.Issuer, root.Subject);
+
+            //loads the eID-Viewer export file (put yours in the root if you want to test with your eID)
+            XmlDocument eidExp = new XmlDocument();
+            eidExp.Load(identity.CardNr + ".eid");
+
+            Image refPic = Image.FromStream(new MemoryStream(Convert.FromBase64String(eidExp.SelectSingleNode("/eid/identity/photo").InnerText)));
+            Assert.Equal(refPic.Size, pic.Size);
+
+            Assert.Equal(eidExp.SelectSingleNode("/eid/address/streetandnumber").InnerText.TrimEnd(), address.StreetAndNumber);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/address/zip").InnerText, address.Zip);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/address/municipality").InnerText, address.Municipality);
+
+            Assert.Equal(eidExp.SelectSingleNode("/eid/card/@cardnumber").InnerText, identity.CardNr);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/card/@chipnumber").InnerText, BitConverter.ToString(identity.ChipNr).Replace("-", ""));
+            Assert.Equal(DateTime.ParseExact(eidExp.SelectSingleNode("/eid/card/@validitydatebegin").InnerText, "yyyyMMdd", CultureInfo.InvariantCulture), identity.ValidityBeginDate);
+            Assert.Equal(DateTime.ParseExact(eidExp.SelectSingleNode("/eid/card/@validitydateend").InnerText, "yyyyMMdd", CultureInfo.InvariantCulture), identity.ValidityEndDate);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/card/deliverymunicipality").InnerText, identity.IssuingMunicipality);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/identity/@nationalnumber").InnerText, identity.NationalNr);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/identity/name").InnerText, identity.Surname);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/identity/firstname").InnerText, identity.FirstNames);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/identity/middlenames").InnerText, identity.FirstLetterOfThirdGivenName);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/identity/nationality").InnerText, identity.Nationality);
+            Assert.Equal(eidExp.SelectSingleNode("/eid/identity/placeofbirth").InnerText, identity.LocationOfBirth);
+            Assert.Equal(DateTime.ParseExact(eidExp.SelectSingleNode("/eid/identity/@dateofbirth").InnerText, "yyyyMMdd", CultureInfo.InvariantCulture), identity.DateOfBirth);
+
+            //TODO, make a little more resilient
+            Assert.NotNull(identity.Gender);
+            Assert.NotNull(identity.Nobility);
+            Assert.NotNull(identity.DocumentType);
+            Assert.NotNull(identity.SpecialStatus);
         }
 
 
-        [TestMethod]
+        [Fact]
         public void ReadAllFiles()
         {
             EidCard target = (EidCard)readers.ListCards().Where(c => c is EidCard).FirstOrDefault();
@@ -100,9 +133,9 @@ namespace Egelke.Eid.Client.Test
                 {
                     i++;
                     byte[] fileData = target.ReadRaw(fileId);
-                    Assert.AreNotEqual(0, fileData.Length);
+                    Assert.NotEmpty(fileData);
                 }
-                Assert.AreEqual(10, i);
+                Assert.Equal(10, i);
             }
         }
 
