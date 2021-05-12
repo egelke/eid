@@ -7,7 +7,7 @@
     <DelaySign>false</DelaySign>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyName>Egelke.Eid.Client</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>Egelke BVBA</Authors>
     <Company>Egelke BVBA</Company>
     <Description>.net client for the Belgium eID Smart Cards.
