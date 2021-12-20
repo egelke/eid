@@ -150,6 +150,30 @@ namespace Egelke.Eid.Client.Model
                     return DocType.ForeignerFplus;
                 case "19":
                     return DocType.EuBlueCard;
+                case "20":
+                    return DocType.ICard_2011_98_EU;
+                case "21":
+                    return DocType.JCard_2011_98_EU;
+                case "22":
+                    return DocType.MCardBrexit;
+                case "23":
+                    return DocType.NCardBrexit;
+                case "27":
+                    return DocType.KCard_Council_EC_1030_2002;
+                case "28":
+                    return DocType.LCard_Council_EC_1030_2002;
+                case "31":
+                    return DocType.EU_Card;
+                case "32":
+                    return DocType.EU_Card_Plus;
+                case "33":
+                    return DocType.ACard_Council_EC_1030_2002;
+                case "34":
+                    return DocType.BCard_Council_EC_1030_2002;
+                case "35":
+                    return DocType.FCard_Council_EC_1030_2002;
+                case "36":
+                    return DocType.FCardPlus_Council_EC_1030_2002;
                 default:
                     throw new InvalidOperationException("Unknown Document Type: " + value.ToStr());
             }
