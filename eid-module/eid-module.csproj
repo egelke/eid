@@ -1,21 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
     <RootNamespace>Egelke.Eid.Client</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyName>Egelke.Eid.Client</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Egelke BVBA</Authors>
     <Company>Egelke BVBA</Company>
     <Description>.net client for the Belgium eID Smart Cards.
 Complements the reading of the files (certs, TLV and signatures).</Description>
-    <PackageReleaseNotes>Process address and identity file (only common fields of the latter)
-Added small (eID-Viewer) inspired demo app.
-    </PackageReleaseNotes>
-    <Copyright>Copyright © Egelke BVBA 2014-2020</Copyright>
+    <PackageReleaseNotes>Upgrade to latest supported .Net Framework
+Added support for latest document types</PackageReleaseNotes>
+    <Copyright>Copyright © Egelke BVBA 2014-2021</Copyright>
 	  <LicenseUrl>http://www.gnu.org/licenses/lgpl.html</LicenseUrl>
     <PackageProjectUrl>https://github.com/egelke/eid</PackageProjectUrl>
     <PackageTags>eID Belgium</PackageTags>
