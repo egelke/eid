@@ -12,6 +12,8 @@ namespace Egelke.Eid.Client
 
         private bool run;
 
+        private SCARD_READERSTATE[] readerStates;
+
 #if NET20
        private System.Threading.Thread bgt;
 #else
@@ -44,23 +46,47 @@ namespace Egelke.Eid.Client
 
         public void StartListen()
         {
-            run = true;
+            lock (this)
+            {
+                if (run) return;
+                run = true;
+
+
+                uint retVal;
+                UpdateList();
+
+                //Prepare the reader state for the first usage.
+                List<SCARD_READERSTATE> readerStateList = List
+                    .Select(n => new SCARD_READERSTATE() { szReader = n, dwCurrentState = ReaderState.SCARD_STATE_UNKNOWN })
+                    .ToList();
+                //Listen for new readers
+                readerStateList.Add(new SCARD_READERSTATE() { szReader = @"\\?PnP?\Notification", dwCurrentState = ReaderState.SCARD_STATE_UNKNOWN });
+                readerStates = readerStateList.ToArray();
+
+                //Init the status
+                retVal = NativeMethods.SCardGetStatusChange(context, 0, readerStates, readerStates.Length);
+                if (retVal != 0) throw new InvalidOperationException("Failed to update the status: 0x" + retVal.ToString("X"));
+
 #if NET20
-            bgt = new System.Threading.Thread(DetectChanges);
-            bgt.Start();
+                bgt = new System.Threading.Thread(DetectChanges);
+                bgt.Start();
 #else
-            bgt = System.Threading.Tasks.Task.Factory.StartNew(DetectChanges, System.Threading.Tasks.TaskCreationOptions.LongRunning);
+                bgt = System.Threading.Tasks.Task.Factory.StartNew(DetectChanges, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 #endif
+            }
         }
 
         public void StopListen()
         {
-            run = false;
+            lock (this)
+            {
+                run = false;
 #if NET20
-            bgt.Join();
+                bgt.Join();
 #else
-            bgt.Wait();
+                bgt.Wait();
 #endif
+            }
         }
 
         ~Readers()
@@ -69,6 +95,7 @@ namespace Egelke.Eid.Client
         }
 
         public event EventHandler<CardEventArgs> CardInsert;
+        public event EventHandler<SCard.NativeEventArgs> ListenerStopped;
 
         public List<Card> ListCards()
         {
@@ -96,18 +123,6 @@ namespace Egelke.Eid.Client
         {
             uint retVal;
 
-            //Prepare the reader state for the first usage.
-            List<SCARD_READERSTATE> readerStateList = List
-                .Select(n => new SCARD_READERSTATE() { szReader = n, dwCurrentState = ReaderState.SCARD_STATE_UNKNOWN })
-                .ToList();
-            //Listen for new readers
-            readerStateList.Add(new SCARD_READERSTATE() { szReader = @"\\?PnP?\Notification", dwCurrentState = ReaderState.SCARD_STATE_UNKNOWN });
-            SCARD_READERSTATE[] readerStates = readerStateList.ToArray();
-
-            //Init the status
-            retVal = NativeMethods.SCardGetStatusChange(context, 0, readerStates, readerStates.Length);
-            if (retVal != 0) throw new InvalidOperationException("Failed to update the status: 0x" + retVal.ToString("X"));
-
             run = true;
             while (run)
             {
@@ -118,7 +133,12 @@ namespace Egelke.Eid.Client
                 }
                 retVal = NativeMethods.SCardGetStatusChange(context, 1000, readerStates, readerStates.Length);
                 if (retVal == 0x8010000A) continue; //timeout
-                if (retVal != 0) throw new InvalidOperationException("Failed to update the status: 0x" + retVal.ToString("X"));
+                if (retVal != 0)
+                {
+                    //todo:logging ("Failed to update the status: 0x" + retVal.ToString("X"))
+                    OnListenerStopped(retVal);
+                    return;
+                }
 
                 //process the new info
                 bool readerChange = false;
@@ -152,7 +172,7 @@ namespace Egelke.Eid.Client
                 if (readerChange)
                 {
                     UpdateList();
-                    readerStateList = List
+                    List<SCARD_READERSTATE> readerStateList = List
                         .Select(n => new SCARD_READERSTATE()
                         {
                             szReader = n,
@@ -164,6 +184,7 @@ namespace Egelke.Eid.Client
                     readerStates = readerStateList.ToArray();
                 }
             }
+            OnListenerStopped(0);
         }
 
         private Card CreateCard(SCARD_READERSTATE readerstate)
@@ -201,6 +222,8 @@ namespace Egelke.Eid.Client
         }
 
         protected virtual void OnCardInsert(Card card) => CardInsert?.Invoke(this, new CardEventArgs(card));
+
+        protected virtual void OnListenerStopped(uint errorCode) => ListenerStopped?.Invoke(this, new SCard.NativeEventArgs(errorCode));
 
         public void Dispose() => Dispose(true);
 
